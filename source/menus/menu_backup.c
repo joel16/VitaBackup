@@ -45,14 +45,8 @@ SceVoid Menu_Backup(SceVoid)
 
 	SceBool enable[MAX_MENU_ITEMS + 1];
 
-	if (!FS_DirExists("ux0:/data/VitaBackup"))
-	{
-		FS_RecursiveMakeDir("ux0:/data/VitaBackup/backups/registry");
-		FS_RecursiveMakeDir("ux0:/data/VitaBackup/backups/shell/db");
-	}
-
 	double scroll_length = (428.0 / (double)MAX_MENU_ITEMS);
-
+	
 	while (1)
 	{
 		memset(&pad, 0, sizeof(SceCtrlData));
@@ -78,7 +72,7 @@ SceVoid Menu_Backup(SceVoid)
 				break;
 
 			vita2d_draw_texture(scroll_pointer, 922, 56 + (scroll_length * i)); // can't go more than y = 428 or it will be out of bounds
-			
+
 			if (selection < LIST_PER_PAGE || i > (selection - LIST_PER_PAGE))
 			{
 				if (i == selection)
@@ -87,7 +81,7 @@ SceVoid Menu_Backup(SceVoid)
 					vita2d_draw_texture(enable[i] == SCE_TRUE? checkbox_full : checkbox_empty, 50, (110 + (DISTANCE_Y * printed)) - 10);
 
 				vita2d_pvf_draw_text(font, 125, 110 + (DISTANCE_Y * printed), i == selection? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, items[i]);
-				vita2d_pvf_draw_text(font, 125, (110 + (DISTANCE_Y * printed)) + 30, i == selection? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.2f, items_desc[i]);
+				vita2d_pvf_draw_text(font, 125, (110 + (DISTANCE_Y * printed)) + 35, i == selection? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, items_desc[i]);
 
 				printed++;
 			}
