@@ -13,11 +13,11 @@ project(${SHORT_NAME})
 include("${VITASDK}/share/vita.cmake" REQUIRED)
 
 set(VITA_APP_NAME "Vita Backup")
-set(VITA_TITLEID  "VBACKUP16")
+set(VITA_TITLEID  "VITABUP00")
 set(VITA_VERSION  "01.00")
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -O3 -Wno-unused-variable -Wno-unused-but-set-variable -Wno-format-truncation -fno-lto")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fno-rtti -fno-exceptions")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Werror -O2 -mword-relocations -fomit-frame-pointer -ffunction-sections")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fno-exceptions -std=gnu++11")
 
 FUNCTION(ADD_RESOURCES out_var)
 	SET(result)
@@ -46,6 +46,7 @@ add_resources(vitaident_res ${res_files})
 include_directories(
 	include
 	include/menus
+	include/microtar
 )
 
 add_executable(${SHORT_NAME}
@@ -54,6 +55,7 @@ add_executable(${SHORT_NAME}
 	source/main.c
 	source/menus/menu_backup.c
 	source/menus/menu_main.c
+	source/microtar/microtar.c
 	source/progress_bar.c
 	source/textures.c
 	source/touch.c

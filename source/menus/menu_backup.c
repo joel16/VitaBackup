@@ -1,6 +1,7 @@
 #include "fs.h"
 #include "menu_backup.h"
 #include "menu_main.h"
+#include "microtar.h"
 #include "textures.h"
 #include "touch.h"
 #include "utils.h"
