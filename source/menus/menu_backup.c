@@ -1,7 +1,7 @@
 #include "fs.h"
 #include "menu_backup.h"
 #include "menu_main.h"
-#include "microtar.h"
+#include "microtar_write.h"
 #include "textures.h"
 #include "touch.h"
 #include "utils.h"
@@ -35,19 +35,19 @@ SceVoid Menu_Backup(SceVoid)
 	const char * items_desc[] = 
 	{
 		"/user/00/savedata/",
-		"ux0:/data/savegames/",
+		"/data/savegames/",
 		"/user/00/trophy/",
-		"/registry/system.*",
+		"vd0:/registry",
 		"/id.dat",
-		"/license/app/",
+		"/license/",
 		"ur0:shell/db/app.db",
-		"tm0:/npdrm/act.da"
+		"tm0:/npdrm/act.dat"
 	};
 
 	SceBool enable[MAX_MENU_ITEMS + 1];
 
 	double scroll_length = (428.0 / (double)MAX_MENU_ITEMS);
-	
+
 	while (1)
 	{
 		memset(&pad, 0, sizeof(SceCtrlData));
@@ -120,15 +120,22 @@ SceVoid Menu_Backup(SceVoid)
 		// Tests so far
 		if (pressed & SCE_CTRL_START)
 		{
+			if (enable[0] == SCE_TRUE)
+				MicrotarWrite_AddToTar("ux0:/user/00/savedata");
+			if (enable[1] == SCE_TRUE)
+				MicrotarWrite_AddToTar("ux0:/data/savegames");
+			if (enable[2] == SCE_TRUE)
+				MicrotarWrite_AddToTar("ux0:/user/00/trophy");
 			if (enable[3] == SCE_TRUE)
-			{
-				FS_CopyFile("vd0:/registry/system.dreg", "ux0:/data/VitaBackup/backups/registry/system.dreg");
-				FS_CopyFile("vd0:/registry/system.ireg", "ux0:/data/VitaBackup/backups/registry/system.ireg");
-			}
+				MicrotarWrite_AddToTar("vd0:/registry");
 			if (enable[4] == SCE_TRUE)
-				FS_CopyFile("ux0:/id.dat", "ux0:/data/VitaBackup/backups/id.dat");
+				MicrotarWrite_AddToTar("ux0:/id.dat");
+			if (enable[5] == SCE_TRUE)
+				MicrotarWrite_AddToTar("ux0:/license");
 			if (enable[6] == SCE_TRUE)
-				FS_CopyFile("ur0:shell/db/app.db", "ux0:/data/VitaBackup/backups/shell/db/app.db");
+				MicrotarWrite_AddToTar("ur0:shell/db/app.db");
+			if (enable[7] == SCE_TRUE)
+				MicrotarWrite_AddToTar("tm0:/npdrm/act.dat");
 		}
 	}
 }

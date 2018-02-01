@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "utils.h"
@@ -31,4 +32,22 @@ char *Utils_Basename(const char * filename)
 {
 	char *p = strrchr (filename, '/');
 	return p ? p + 1 : (char *) filename;
+}
+
+char *Utils_RemoveExt(char *filename) 
+{
+	char *ret, *lastdot;
+
+   	if (filename == NULL)
+   		return NULL;
+   	if ((ret = malloc(strlen(filename) + 1)) == NULL)
+   		return NULL;
+
+   	strcpy(ret, filename);
+   	lastdot = strrchr(ret, '.');
+
+   	if (lastdot != NULL)
+   		*lastdot = '\0';
+
+   	return ret;
 }

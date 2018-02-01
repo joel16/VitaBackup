@@ -10,11 +10,8 @@ static SceVoid Init_Services(SceVoid)
 	Textures_Load();
 	touchInit();
 
-	if (!FS_DirExists("ux0:/data/VitaBackup"))
-	{
-		FS_RecursiveMakeDir("ux0:/data/VitaBackup/backups/registry");
-		FS_RecursiveMakeDir("ux0:/data/VitaBackup/backups/shell/db");
-	}
+	if (!FS_DirExists("ux0:/data/VitaBackup/backups"))
+		FS_RecursiveMakeDir("ux0:/data/VitaBackup/backups");
 }
 
 static SceVoid Term_Services(SceVoid)

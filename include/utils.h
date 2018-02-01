@@ -21,5 +21,6 @@
 vita2d_texture *Utils_LoadPNG(const SceVoid * buffer);
 SceVoid Utils_GetSizeString(char *string, SceULong64 size);
 char *Utils_Basename(const char * filename);
+char *Utils_RemoveExt(char *filename);
 
 #endif

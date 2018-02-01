@@ -56,6 +56,7 @@ add_executable(${SHORT_NAME}
 	source/menus/menu_backup.c
 	source/menus/menu_main.c
 	source/microtar/microtar.c
+	source/microtar/microtar_write.c
 	source/progress_bar.c
 	source/textures.c
 	source/touch.c
