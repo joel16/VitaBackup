@@ -181,7 +181,7 @@ static SceInt Restore_DisplayFiles(SceVoid)
 			strcpy(path, cwd);
 			strcpy(path + strlen(path), file->name);
 			char dateStr[16], timeStr[24];
-			Utils_GetDateString(dateStr, 0, FS_GetFileModifiedTime(path)); // Get modified date
+			Utils_GetDateString(dateStr, 0, FS_GetFileModifiedTime(path), SCE_TRUE); // Get modified date
 			Utils_GetTimeString(timeStr, 0, FS_GetFileModifiedTime(path)); // Get modified time
 			
 			if (!file->isDir)

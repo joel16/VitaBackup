@@ -53,7 +53,7 @@ SceVoid Utils_GetTimeString(char string[16], SceInt time_format, SceDateTime tim
 	}
 }
 
-SceVoid Utils_GetDateString(char string[24], SceInt date_format, SceDateTime time) 
+SceVoid Utils_GetDateString(char string[24], SceInt date_format, SceDateTime time, SceBool slash) 
 {
 	SceDateTime time_local;
 	Utils_ConvertUtcToLocalTime(&time_local, &time);
@@ -61,15 +61,15 @@ SceVoid Utils_GetDateString(char string[24], SceInt date_format, SceDateTime tim
 	switch (date_format) 
 	{
 		case SCE_SYSTEM_PARAM_DATE_FORMAT_YYYYMMDD:
-			snprintf(string, 24, "%04d/%02d/%02d", time_local.year, time_local.month, time_local.day);
+			snprintf(string, 24, "%04d%s%02d%s%02d", time_local.year, slash? "/" : "", time_local.month, slash? "/" : "", time_local.day);
 			break;
 
 		case SCE_SYSTEM_PARAM_DATE_FORMAT_DDMMYYYY:
-			snprintf(string, 24, "%02d/%02d/%04d", time_local.day, time_local.month, time_local.year);
+			snprintf(string, 24, "%02d%s%02d%s%04d", time_local.day, slash? "/" : "", time_local.month, slash? "/" : "", time_local.year);
 			break;
 
 		case SCE_SYSTEM_PARAM_DATE_FORMAT_MMDDYYYY:
-			snprintf(string, 24, "%02d/%02d/%04d", time_local.month, time_local.day, time_local.year);
+			snprintf(string, 24, "%02d%s%02d%s%04d", time_local.month, slash? "/" : "", time_local.day, slash? "/" : "", time_local.year);
 			break;
 	}
 }

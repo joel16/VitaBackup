@@ -110,8 +110,14 @@ static SceInt MicrotarWrite_AddFileToTarRec(char *src)
 
 SceInt MicrotarWrite_AddToTar(char *src)
 {
-	char * path = (char *)malloc(128);
-	snprintf(path, 128, "%s:/data/VitaBackup/backups/%s.tar", storage_location == SCE_FALSE? "ux0" : "ur0", Utils_RemoveExt(Utils_Basename(src)));
+	SceDateTime time;
+	sceRtcGetCurrentClockLocalTime(&time);
+
+	char *path = (char *)malloc(128);
+	char *dateStr = (char *)malloc(24);
+	Utils_GetDateString(dateStr, 0, time, SCE_FALSE);
+	snprintf(path, 128, "%s:/data/VitaBackup/backups/%s-%s.tar", storage_location == SCE_FALSE? "ux0" : "ur0", 
+		Utils_RemoveExt(Utils_Basename(src)), dateStr);
 
 	if (FS_FileExists(path))
 		FS_RemoveFile(path); // Delete output file (if existing)
@@ -125,6 +131,7 @@ SceInt MicrotarWrite_AddToTar(char *src)
 	if (R_FAILED(ret = sceIoGetstat(src, &stat)))
 	{
 		free(path);
+		free(dateStr);
 		return ret;
 	}
 
@@ -134,6 +141,7 @@ SceInt MicrotarWrite_AddToTar(char *src)
 		MicrotarWrite_AddFileToTar(src);
 
 	free(path);
+	free(dateStr);
 	mtar_finalize(&tar); // Finalize archive
 	mtar_close(&tar); // Close archive
 }

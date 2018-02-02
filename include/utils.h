@@ -21,7 +21,7 @@
 vita2d_texture *Utils_LoadPNG(const SceVoid * buffer);
 SceVoid Utils_GetSizeString(char *string, SceULong64 size);
 SceVoid Utils_GetTimeString(char string[16], SceInt time_format, SceDateTime time);
-SceVoid Utils_GetDateString(char string[24], SceInt date_format, SceDateTime time);
+SceVoid Utils_GetDateString(char string[24], SceInt date_format, SceDateTime time, SceBool slash);
 char *Utils_Basename(const char * filename);
 char *Utils_RemoveExt(char *filename);
 
