@@ -1,6 +1,5 @@
 #include "fs.h"
 #include "menu_backup.h"
-#include "menu_main.h"
 #include "microtar_write.h"
 #include "textures.h"
 #include "touch.h"
@@ -10,7 +9,7 @@
 #define LIST_PER_PAGE  5
 #define DISTANCE_Y     80
 
-SceVoid Menu_Backup(SceVoid)
+SceInt Menu_Backup(SceVoid)
 {
 	SceInt selection = 0;
 
@@ -115,7 +114,7 @@ SceVoid Menu_Backup(SceVoid)
 		}
 
 		if (pressed & SCE_CTRL_CIRCLE)
-			Menu_Main();
+			break;
 
 		// Tests so far
 		if (pressed & SCE_CTRL_START)
@@ -138,4 +137,6 @@ SceVoid Menu_Backup(SceVoid)
 				MicrotarWrite_AddToTar("tm0:/npdrm/act.dat");
 		}
 	}
+
+	return 0;
 }

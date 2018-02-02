@@ -1,5 +1,6 @@
 #include "menu_backup.h"
 #include "menu_main.h"
+#include "menu_options.h"
 #include "textures.h"
 #include "touch.h"
 #include "utils.h"
@@ -56,8 +57,17 @@ SceVoid Menu_Main(SceVoid)
 
 		if (pressed & SCE_CTRL_CROSS)
 		{
-			if (selection == 0)
-				Menu_Backup();
+			switch (selection)
+			{
+				case 0:
+					selection = Menu_Backup();
+					break;
+				case 1:
+					break;
+				case 2:
+					selection = Menu_Options();
+					break;
+			}
 		}
 	}
 }

@@ -3,6 +3,6 @@
 
 #include <vitasdk.h>
 
-SceVoid Menu_Backup(SceVoid);
+SceInt Menu_Backup(SceVoid);
 
 #endif

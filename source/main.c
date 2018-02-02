@@ -1,5 +1,6 @@
 #include "fs.h"
 #include "menu_main.h"
+#include "menu_options.h"
 #include "textures.h"
 #include "touch.h"
 
@@ -12,6 +13,10 @@ static SceVoid Init_Services(SceVoid)
 
 	if (!FS_DirExists("ux0:/data/VitaBackup/backups"))
 		FS_RecursiveMakeDir("ux0:/data/VitaBackup/backups");
+	if (!FS_DirExists("ur0:/data/VitaBackup/backups"))
+		FS_RecursiveMakeDir("ur0:/data/VitaBackup/backups");
+
+	Options_LoadConfig();
 }
 
 static SceVoid Term_Services(SceVoid)

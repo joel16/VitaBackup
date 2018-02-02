@@ -31,16 +31,32 @@ SceBool FS_DirExists(const char *path)
 	return SCE_FALSE;
 }
 
-SceInt FS_WriteFile(char *file, SceVoid *buf, SceInt size) 
+SceInt FS_ReadFile(char *path, SceVoid *buf, SceInt size) 
 {
-	SceUID fd = 0;
+	SceUID file = 0;
 
-	if (R_FAILED(fd = sceIoOpen(file, SCE_O_WRONLY | SCE_O_CREAT | SCE_O_TRUNC, 0777)))
-		return fd;
+	if (R_SUCCEEDED(file = sceIoOpen(path, SCE_O_RDONLY, 0)))
+	{
+		SceInt read = sceIoRead(file, buf, size);
+		sceIoClose(file);
+		return read;
+	}
 	
-	SceInt written = sceIoWrite(fd, buf, size);
-	sceIoClose(fd);
-	return written;
+	return file;
+}
+
+SceInt FS_WriteFile(char *path, SceVoid *buf, SceInt size) 
+{	
+	SceUID file = 0;
+	
+	if (R_SUCCEEDED(file = sceIoOpen(path, SCE_O_WRONLY | SCE_O_CREAT | SCE_O_TRUNC, 0777)))
+	{
+		SceInt written = sceIoWrite(file, buf, size);
+		sceIoClose(file);
+		return written;
+	}
+		
+	return file;
 }
 
 SceInt FS_MakeDir(const char *path)

@@ -1,4 +1,5 @@
 #include "fs.h"
+#include "menu_options.h"
 #include "microtar.h"
 #include "microtar_write.h"
 #include "progress_bar.h"
@@ -13,16 +14,16 @@ static SceInt MicrotarWrite_AddFileToTar(char *src)
 	SceInt chunksize = (512 * 1024); // Chunk size
 	char *buffer = (char *)malloc(chunksize); // Reading buffer
 
-	SceOff totalWritten = 0, totalRead = 0; 
+	size_t totalWritten = 0, totalRead = 0; 
 
 	SceOff size = FS_GetFileSize(src); // Get input file size
 
 	SceInt in = 0;
 
 	// Opened file for reading
-	if (R_SUCCEEDED(in = sceIoOpen(src, SCE_O_RDONLY, 0777))) // Open file for reading
+	if (R_SUCCEEDED(in = sceIoOpen(src, SCE_O_RDONLY, 0))) // Open file for reading
 	{
-		SceOff bytesRead = 0; // Read byte count
+		size_t bytesRead = 0; // Read byte count
 		mtar_write_file_header(&tar, src, size);
 
 		// Copy loop (512KB at a time)
@@ -110,7 +111,7 @@ static SceInt MicrotarWrite_AddFileToTarRec(char *src)
 SceInt MicrotarWrite_AddToTar(char *src)
 {
 	char * path = (char *)malloc(256);
-	snprintf(path, 256, "ux0:/data/VitaBackup/backups/%s.tar", Utils_RemoveExt(Utils_Basename(src)));
+	snprintf(path, 256, "%s:/data/VitaBackup/backups/%s.tar", storage_location == SCE_FALSE? "ux0" : "ur0", Utils_RemoveExt(Utils_Basename(src)));
 
 	if (FS_FileExists(path))
 		FS_RemoveFile(path); // Delete output file (if existing)
