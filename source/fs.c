@@ -125,6 +125,14 @@ SceOff FS_GetFileSize(const char *path)
 	return stat.st_size;
 }
 
+SceDateTime FS_GetFileModifiedTime(const char *path)
+{
+	SceIoStat stat;
+	sceIoGetstat(path, &stat);
+	
+	return stat.st_mtime;
+}
+
 SceOff FS_GetPartitionInfo(SceBool max, const char *partition)
 {
 	SceInt ret = 0;

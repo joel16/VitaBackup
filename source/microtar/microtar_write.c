@@ -56,7 +56,7 @@ static SceInt MicrotarWrite_AddFileToTar(char *src)
 
 static SceInt MicrotarWrite_AddFileToTarRec(char *src)
 {
-	int dir = 0;
+	SceInt dir = 0;
 	
 	if (R_SUCCEEDED(dir = sceIoDopen(src)))
 	{
@@ -110,8 +110,8 @@ static SceInt MicrotarWrite_AddFileToTarRec(char *src)
 
 SceInt MicrotarWrite_AddToTar(char *src)
 {
-	char * path = (char *)malloc(256);
-	snprintf(path, 256, "%s:/data/VitaBackup/backups/%s.tar", storage_location == SCE_FALSE? "ux0" : "ur0", Utils_RemoveExt(Utils_Basename(src)));
+	char * path = (char *)malloc(128);
+	snprintf(path, 128, "%s:/data/VitaBackup/backups/%s.tar", storage_location == SCE_FALSE? "ux0" : "ur0", Utils_RemoveExt(Utils_Basename(src)));
 
 	if (FS_FileExists(path))
 		FS_RemoveFile(path); // Delete output file (if existing)

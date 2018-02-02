@@ -28,6 +28,52 @@ SceVoid Utils_GetSizeString(char * string, SceULong64 size) //Thanks TheOfficial
 	sprintf(string, "%.*f %s", (i == 0) ? 0 : 2, double_size, units[i]);
 }
 
+static SceVoid Utils_ConvertUtcToLocalTime(SceDateTime *time_local, SceDateTime *time_utc) 
+{
+	SceRtcTick tick;
+	sceRtcGetTick(time_utc, &tick);
+	sceRtcConvertUtcToLocalTime(&tick, &tick);
+	sceRtcSetTick(time_local, &tick);	
+}
+
+SceVoid Utils_GetTimeString(char string[16], SceInt time_format, SceDateTime time) 
+{
+	SceDateTime time_local;
+	Utils_ConvertUtcToLocalTime(&time_local, &time);
+
+	switch(time_format) 
+	{
+		case SCE_SYSTEM_PARAM_TIME_FORMAT_12HR:
+			snprintf(string, 16, "%02d:%02d %s", (time_local.hour > 12) ? (time_local.hour-12) : ((time_local.hour == 0) ? 12 : time_local.hour), time_local.minute, time_local.hour >= 12 ? "PM" : "AM");
+			break;
+
+		case SCE_SYSTEM_PARAM_TIME_FORMAT_24HR:
+			snprintf(string, 16, "%02d:%02d", time_local.hour, time_local.minute);
+			break;
+	}
+}
+
+SceVoid Utils_GetDateString(char string[24], SceInt date_format, SceDateTime time) 
+{
+	SceDateTime time_local;
+	Utils_ConvertUtcToLocalTime(&time_local, &time);
+
+	switch (date_format) 
+	{
+		case SCE_SYSTEM_PARAM_DATE_FORMAT_YYYYMMDD:
+			snprintf(string, 24, "%04d/%02d/%02d", time_local.year, time_local.month, time_local.day);
+			break;
+
+		case SCE_SYSTEM_PARAM_DATE_FORMAT_DDMMYYYY:
+			snprintf(string, 24, "%02d/%02d/%04d", time_local.day, time_local.month, time_local.year);
+			break;
+
+		case SCE_SYSTEM_PARAM_DATE_FORMAT_MMDDYYYY:
+			snprintf(string, 24, "%02d/%02d/%04d", time_local.month, time_local.day, time_local.year);
+			break;
+	}
+}
+
 char *Utils_Basename(const char * filename)
 {
 	char *p = strrchr (filename, '/');

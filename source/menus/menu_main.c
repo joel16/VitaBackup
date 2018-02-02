@@ -1,6 +1,7 @@
 #include "menu_backup.h"
 #include "menu_main.h"
 #include "menu_options.h"
+#include "menu_restore.h"
 #include "textures.h"
 #include "touch.h"
 #include "utils.h"
@@ -63,6 +64,7 @@ SceVoid Menu_Main(SceVoid)
 					selection = Menu_Backup();
 					break;
 				case 1:
+					selection = Menu_Restore();
 					break;
 				case 2:
 					selection = Menu_Options();

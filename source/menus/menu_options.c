@@ -72,6 +72,8 @@ SceInt Menu_Options(SceVoid)
 
 	int title_width = vita2d_pvf_text_width(font, 1.5f, "Options");
 
+	Options_LoadConfig(); // Reload config
+
 	while (1)
 	{
 		memset(&pad, 0, sizeof(SceCtrlData));
