@@ -4,6 +4,19 @@
 
 #include "utils.h"
 
+static SceCtrlData pad, old_pad;
+
+SceInt Utils_HandleControls(SceVoid)
+{
+	memset(&pad, 0, sizeof(SceCtrlData));
+	sceCtrlPeekBufferPositive(0, &pad, 1);
+
+	pressed = pad.buttons & ~old_pad.buttons;
+	
+	old_pad = pad;
+	return 0;
+}
+
 vita2d_texture *Utils_LoadPNG(const SceVoid *buffer)
 {
 	vita2d_texture * texture = vita2d_load_PNG_buffer(buffer);

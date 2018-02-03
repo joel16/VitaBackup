@@ -15,10 +15,6 @@ SceVoid Menu_Main(SceVoid)
 
 	SceInt selection = 0;
 
-	SceCtrlData pad, old_pad;
-	old_pad.buttons = 0;
-	SceUInt32 pressed;
-
 	while (1) 
 	{
 		vita2d_start_drawing();
@@ -40,11 +36,7 @@ SceVoid Menu_Main(SceVoid)
 
 		vita2d_end_frame();
 
-		memset(&pad, 0, sizeof(SceCtrlData));
-		sceCtrlPeekBufferPositive(0, &pad, 1);
-
-		pressed = pad.buttons & ~old_pad.buttons;
-		old_pad = pad;
+		Utils_HandleControls();
 
 		if (pressed & SCE_CTRL_RIGHT)
 			selection++;

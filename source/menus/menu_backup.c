@@ -13,10 +13,6 @@ SceInt Menu_Backup(SceVoid)
 {
 	SceInt selection = 0;
 
-	SceCtrlData pad, old_pad;
-	old_pad.buttons = 0;
-	SceUInt32 pressed;
-
 	int title_width = vita2d_pvf_text_width(font, 1.5f, "Select backup data");
 
 	const char * items[] = 
@@ -49,12 +45,6 @@ SceInt Menu_Backup(SceVoid)
 
 	while (1)
 	{
-		memset(&pad, 0, sizeof(SceCtrlData));
-		sceCtrlPeekBufferPositive(0, &pad, 1);
-
-		pressed = pad.buttons & ~old_pad.buttons;
-		old_pad = pad;
-
 		vita2d_start_drawing();
 		vita2d_clear_screen();
 
@@ -87,7 +77,10 @@ SceInt Menu_Backup(SceVoid)
 			}
 		}
 
-		// Do this in frame
+		vita2d_end_frame();
+
+		Utils_HandleControls();
+
 		if (pressed & SCE_CTRL_CROSS)
 		{
 			if (!enable[selection])
@@ -95,8 +88,6 @@ SceInt Menu_Backup(SceVoid)
 			else
 				enable[selection] = SCE_FALSE; 
 		}
-
-		vita2d_end_frame();
 
 		if (pressed & SCE_CTRL_DOWN)
 		{

@@ -18,6 +18,9 @@
 	sceDisplayWaitVblankStart();	\
 }
 
+SceUInt32 pressed;
+
+SceInt Utils_HandleControls(SceVoid);
 vita2d_texture *Utils_LoadPNG(const SceVoid * buffer);
 SceVoid Utils_GetSizeString(char *string, SceULong64 size);
 SceVoid Utils_GetTimeString(char string[16], SceInt time_format, SceDateTime time);

@@ -201,20 +201,14 @@ static SceInt Restore_DisplayFiles(SceVoid)
 
 SceInt Menu_Restore(SceVoid)
 {
-	SceCtrlData pad, old_pad;
-	old_pad.buttons = 0;
-	SceUInt32 pressed;
+	memset(enable, 0, sizeof(enable)); // Reset all enabled data
 
 	Restore_PopulateBackups(SCE_TRUE);
 	Restore_DisplayFiles();
 
 	while (1)
 	{
-		memset(&pad, 0, sizeof(SceCtrlData));
-		sceCtrlPeekBufferPositive(0, &pad, 1);
-
-		pressed = pad.buttons & ~old_pad.buttons;
-		old_pad = pad;
+		Utils_HandleControls();
 
 		if (fileCount > 0)
 		{

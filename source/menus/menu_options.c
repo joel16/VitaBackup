@@ -66,22 +66,12 @@ SceInt Menu_Options(SceVoid)
 {
 	SceInt selection = 0;
 
-	SceCtrlData pad, old_pad;
-	old_pad.buttons = 0;
-	SceUInt32 pressed;
-
 	int title_width = vita2d_pvf_text_width(font, 1.5f, "Options");
 
 	Options_LoadConfig(); // Reload config
 
 	while (1)
 	{
-		memset(&pad, 0, sizeof(SceCtrlData));
-		sceCtrlPeekBufferPositive(0, &pad, 1);
-
-		pressed = pad.buttons & ~old_pad.buttons;
-		old_pad = pad;
-
 		vita2d_start_drawing();
 		vita2d_clear_screen();
 
@@ -105,14 +95,16 @@ SceInt Menu_Options(SceVoid)
 
 		vita2d_end_frame();
 
-		if (pressed & SCE_CTRL_DOWN)
+		Utils_HandleControls();
+
+		if (pressed & SCE_CTRL_RIGHT)
 		{
 			if (selection < (MAX_MENU_ITEMS - 1))
 				selection++;
 			else 
 				selection = 0;
 		}
-		else if (pressed & SCE_CTRL_UP)
+		else if (pressed & SCE_CTRL_LEFT)
 		{
 			if (selection > 0)
 				selection--;
