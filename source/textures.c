@@ -19,6 +19,9 @@ extern SceUChar8 _binary_res_checkbox_empty_selected_png_start;
 extern SceUChar8 _binary_res_scroll_bg_png_start;
 extern SceUChar8 _binary_res_scroll_pointer_png_start;
 
+extern SceUChar8 _binary_res_ico_container_zip_png_start;
+extern SceUChar8 _binary_res_ico_container_zip_selected_png_start;
+
 SceVoid Textures_Load(SceVoid)
 {
 	background = Utils_LoadPNG(&_binary_res_background_png_start);
@@ -39,12 +42,18 @@ SceVoid Textures_Load(SceVoid)
 	scroll_bg = Utils_LoadPNG(&_binary_res_scroll_bg_png_start);
 	scroll_pointer = Utils_LoadPNG(&_binary_res_scroll_pointer_png_start);
 
+	ico_container_zip = Utils_LoadPNG(&_binary_res_ico_container_zip_png_start);
+	ico_container_zip_selected = Utils_LoadPNG(&_binary_res_ico_container_zip_selected_png_start);
+
 	font = vita2d_load_default_pvf();
 }
 
 SceVoid Textures_Free(SceVoid)
 {
 	vita2d_free_pvf(font);
+
+	vita2d_free_texture(ico_container_zip_selected);
+	vita2d_free_texture(ico_container_zip);
 
 	vita2d_free_texture(scroll_pointer);
 	vita2d_free_texture(scroll_bg);
@@ -62,4 +71,5 @@ SceVoid Textures_Free(SceVoid)
 	vita2d_free_texture(ico_main_backup);
 
 	vita2d_free_texture(logo);
+	vita2d_free_texture(background);
 }

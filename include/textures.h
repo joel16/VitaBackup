@@ -12,6 +12,7 @@ vita2d_texture *ico_main_backup_selected, *ico_main_restore_selected, *ico_main_
 vita2d_texture *checkbox_full, *checkbox_empty;
 vita2d_texture *checkbox_full_selected, *checkbox_empty_selected;
 vita2d_texture *scroll_bg, *scroll_pointer;
+vita2d_texture *ico_container_zip, *ico_container_zip_selected;
 
 vita2d_pvf *font;
 
