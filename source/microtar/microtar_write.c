@@ -1,4 +1,5 @@
 #include "fs.h"
+#include "log.h"
 #include "menu_options.h"
 #include "microtar.h"
 #include "microtar_write.h"
@@ -32,7 +33,7 @@ static SceInt MicrotarWrite_AddFileToTar(char *src)
 			totalRead += bytesRead; // Accumulate read data
 			totalWritten += mtar_write_data(&tar, buffer, bytesRead); // Write data
 		
-			ProgressBar_DisplayProgress("Backing in progress...", Utils_Basename(src), totalRead, size);
+			ProgressBar_DisplayProgress("Backup in progress...", Utils_Basename(src), totalRead, size);
 		}
 
 		if (totalRead != totalWritten) // Insufficient copy
@@ -40,12 +41,14 @@ static SceInt MicrotarWrite_AddFileToTar(char *src)
 			
 		if (R_FAILED(ret = sceIoClose(in)))
 		{
+			DEBUG_PRINT("sceIoClose(in) failed: 0x%lx\n\n", ret);
 			free(buffer);
 			return ret;
 		}
 	}
 	else
 	{
+		DEBUG_PRINT("in = sceIoOpen(src, SCE_O_RDONLY, 0) failed: 0x%lx\n\n", in);
 		free(buffer);
 		return in;
 	}
@@ -100,10 +103,16 @@ static SceInt MicrotarWrite_AddFileToTarRec(char *src)
 		}
 
 		if (R_FAILED(ret = sceIoDclose(dir)))
+		{
+			DEBUG_PRINT("ret = sceIoDclose(dir) failed: 0x%lx\n\n", ret);
 			return ret;
+		}
 	}
 	else
+	{
+		DEBUG_PRINT("dir = sceIoDopen(src) failed: 0x%lx\n\n", dir);
 		return dir;
+	}
 
 	return 0;
 }

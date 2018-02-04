@@ -26,7 +26,10 @@ static SceInt MicrotarRead_ExtractFileFromTarRec(char *dst)
 		{
 			char *data = calloc(1, header.size + 1);
 			if (R_FAILED(ret = mtar_read_data(&tar, data, header.size)))
+			{
+				DEBUG_PRINT("mtar_read_data failed: 0x%lx\n\n", ret);
 				return ret;
+			}
 
 			DEBUG_PRINT("File name: %s\nFile size: %d\npos: %llu\nremaining_data: %llu\n\n", header.name, header.size, tar.pos, tar.remaining_data);
 			ProgressBar_DisplayProgress("Restore in progress...", Utils_Basename(header.name), tar.pos, tarSize);

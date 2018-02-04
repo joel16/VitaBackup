@@ -16,6 +16,9 @@ static SceVoid Init_Services(SceVoid)
 	if (!FS_DirExists("ur0:/data/VitaBackup/backups"))
 		FS_RecursiveMakeDir("ur0:/data/VitaBackup/backups");
 
+	if (FS_FileExists("ux0:data/VitaBackup/log.txt")) // Start a new log file on boot.
+		FS_RemoveFile("ux0:data/VitaBackup/log.txt");
+
 	Options_LoadConfig();
 }
 
