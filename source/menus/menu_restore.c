@@ -130,14 +130,14 @@ SceBool enable[MAX_MENU_ITEMS + 1];
 
 static SceInt Restore_DisplayFiles(SceVoid)
 {
-	double scroll_length = (428.0 / (double)fileCount);
+	double scroll_length = (372.0 / ((double)fileCount - 1.0));
 	int title_width = vita2d_pvf_text_width(font, 1.5f, "Select restore data");
 
 	vita2d_start_drawing();
 	vita2d_clear_screen();
 	
-	vita2d_draw_texture(background, 0, 0);
-	vita2d_draw_texture(scroll_bg, 922, 56);
+	vita2d_draw_texture(background[theme], 0, 0);
+	vita2d_draw_texture(scroll_bg[theme], 922, 56);
 
 	vita2d_pvf_draw_text(font, (960 - title_width) / 2, 50, COLOUR_TEXT, 1.5f, "Select restore data");
 
@@ -145,7 +145,7 @@ static SceInt Restore_DisplayFiles(SceVoid)
 	SceInt i = 0, printed = 0;
 
 	// Draw File List
-	File * file = files;
+	File *file = files;
 	
 	for (; file != NULL; file = file->next)
 	{
@@ -153,19 +153,19 @@ static SceInt Restore_DisplayFiles(SceVoid)
 		if (printed == LIST_PER_PAGE) 
 			break;
 
-		vita2d_draw_texture(scroll_pointer, 922, 56 + (scroll_length * i)); // can't go more than y = 428 or it will be out of bounds
+		vita2d_draw_texture(scroll_pointer[theme], 922, 56 + (scroll_length * selection)); // can't go more than y = 428 or it will be out of bounds
 
 		if (selection < LIST_PER_PAGE || i > (selection - LIST_PER_PAGE))
 		{
 			if (i == selection)
-				vita2d_draw_texture(enable[i] == SCE_TRUE? checkbox_full_selected : checkbox_empty_selected, 50, (110 + (DISTANCE_Y * printed)) - 10);
+				vita2d_draw_texture(enable[i] == SCE_TRUE? checkbox_full_selected[theme] : checkbox_empty_selected[theme], 50, (110 + (DISTANCE_Y * printed)) - 10);
 			else
-				vita2d_draw_texture(enable[i] == SCE_TRUE? checkbox_full : checkbox_empty, 50, (110 + (DISTANCE_Y * printed)) - 10);
+				vita2d_draw_texture(enable[i] == SCE_TRUE? checkbox_full[theme] : checkbox_empty[theme], 50, (110 + (DISTANCE_Y * printed)) - 10);
 
 			char * ext = strrchr(file->name, '.');
 
 			if (strncasecmp(ext ,".tar", 4) == 0)
-				vita2d_draw_texture(i == selection? ico_container_zip_selected : ico_container_zip, 115, 86 + (DISTANCE_Y * printed));
+				vita2d_draw_texture(i == selection? ico_container_zip_selected[theme] : ico_container_zip[theme], 115, 86 + (DISTANCE_Y * printed));
 			
 			char buf[64], path[500], size[16];;
 
@@ -256,15 +256,22 @@ SceInt Menu_Restore(SceVoid)
 
 		if (pressed & SCE_CTRL_START)
 		{
-			File *file = Restore_FindIndex(selection);
+			for (SceInt i = 0; i < fileCount; i++)
+			{
+				if (enable[i] == SCE_TRUE)
+				{
+					File *file = Restore_FindIndex(i);
 			
-			char path[256], filename[256];
-			strcpy(filename, file->name);
+					char path[256], filename[256];
+					strcpy(filename, file->name);
 	
-			strcpy(path, cwd);
-			strcpy(path + strlen(path), file->name);
+					strcpy(path, cwd);
+					strcpy(path + strlen(path), file->name);
 			
-			MicrotarRead_ExtractTar(path, "ux0:");
+					MicrotarRead_ExtractTar(path, "ux0:");
+				}
+			}
+			Restore_DisplayFiles();
 		}
 
 		if (pressed & SCE_CTRL_CIRCLE)

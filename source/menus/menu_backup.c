@@ -1,5 +1,6 @@
 #include "fs.h"
 #include "menu_backup.h"
+#include "menu_options.h"
 #include "microtar_write.h"
 #include "textures.h"
 #include "touch.h"
@@ -43,16 +44,16 @@ SceInt Menu_Backup(SceVoid)
 
 	SceBool enable[MAX_MENU_ITEMS + 1];
 
-	double scroll_length = (428.0 / (double)MAX_MENU_ITEMS);
+	double scroll_length = (372.0 / ((double)MAX_MENU_ITEMS - 1.0));
 
 	while (1)
 	{
 		vita2d_start_drawing();
 		vita2d_clear_screen();
 
-		vita2d_draw_texture(background, 0, 0);
+		vita2d_draw_texture(background[theme], 0, 0);
 
-		vita2d_draw_texture(scroll_bg, 922, 56);
+		vita2d_draw_texture(scroll_bg[theme], 922, 56);
 
 		vita2d_pvf_draw_text(font, (960 - title_width) / 2, 50, COLOUR_TEXT, 1.5f, "Select backup data");
 
@@ -63,14 +64,14 @@ SceInt Menu_Backup(SceVoid)
 			if (printed == LIST_PER_PAGE)
 				break;
 
-			vita2d_draw_texture(scroll_pointer, 922, 56 + (scroll_length * i)); // can't go more than y = 428 or it will be out of bounds
+			vita2d_draw_texture(scroll_pointer[theme], 922, 56 + (scroll_length * selection)); // can't go more than y = 428 or it will be out of bounds
 
 			if (selection < LIST_PER_PAGE || i > (selection - LIST_PER_PAGE))
 			{
 				if (i == selection)
-					vita2d_draw_texture(enable[i] == SCE_TRUE? checkbox_full_selected : checkbox_empty_selected, 50, (110 + (DISTANCE_Y * printed)) - 10);
+					vita2d_draw_texture(enable[i] == SCE_TRUE? checkbox_full_selected[theme] : checkbox_empty_selected[theme], 50, (110 + (DISTANCE_Y * printed)) - 10);
 				else
-					vita2d_draw_texture(enable[i] == SCE_TRUE? checkbox_full : checkbox_empty, 50, (110 + (DISTANCE_Y * printed)) - 10);
+					vita2d_draw_texture(enable[i] == SCE_TRUE? checkbox_full[theme] : checkbox_empty[theme], 50, (110 + (DISTANCE_Y * printed)) - 10);
 
 				vita2d_pvf_draw_text(font, 125, 110 + (DISTANCE_Y * printed), i == selection? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, items[i]);
 				vita2d_pvf_draw_text(font, 125, (110 + (DISTANCE_Y * printed)) + 35, i == selection? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, items_desc[i]);

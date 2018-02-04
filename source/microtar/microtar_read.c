@@ -7,10 +7,11 @@
 #include "utils.h"
 
 static mtar_t tar;
+static SceOff tarSize;
 
 static SceInt MicrotarRead_ExtractFileFromTarRec(char *dst)
 {
-	SceInt ret = 0, written = 0;
+	SceInt ret = 0;
 	mtar_header_t header;
 
 	// Read Success
@@ -18,7 +19,7 @@ static SceInt MicrotarRead_ExtractFileFromTarRec(char *dst)
 	{
 		if (header.type == MTAR_TDIR)
 		{
-			DEBUG_PRINT("Header name: %s\n\n", header.name);
+			DEBUG_PRINT("Dir name: %s\npos: %llu\nremaining_data: %llu\n\n", header.name, tar.pos, tar.remaining_data);
 			FS_RecursiveMakeDir(header.name);
 		}
 		else
@@ -27,9 +28,9 @@ static SceInt MicrotarRead_ExtractFileFromTarRec(char *dst)
 			if (R_FAILED(ret = mtar_read_data(&tar, data, header.size)))
 				return ret;
 
-			DEBUG_PRINT("Header name: %s\nHeader size: %d\n\n", header.name, header.size);
-			ProgressBar_DisplayProgress("Restoring in progress...", Utils_Basename(header.name), written, header.size);
-			written = FS_WriteFile(header.name, data, header.size + 1);
+			DEBUG_PRINT("File name: %s\nFile size: %d\npos: %llu\nremaining_data: %llu\n\n", header.name, header.size, tar.pos, tar.remaining_data);
+			ProgressBar_DisplayProgress("Restore in progress...", Utils_Basename(header.name), tar.pos, tarSize);
+			FS_WriteFile(header.name, data, header.size + 1);
 			free(data);
 		}
 
@@ -41,6 +42,8 @@ static SceInt MicrotarRead_ExtractFileFromTarRec(char *dst)
 
 SceInt MicrotarRead_ExtractTar(char *src, char *dst)
 {
+	tarSize = FS_GetFileSize(src); // Get input file size
+
 	/* Open archive for writing */
 	mtar_open(&tar, src, "r");
 

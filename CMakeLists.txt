@@ -39,7 +39,8 @@ ENDFUNCTION()
 
 file(GLOB res_files RELATIVE
   ${CMAKE_SOURCE_DIR}
-  res/*.png
+  res/Light/*.png
+  res/Phalaris/*.png
 )
 add_resources(vitaident_res ${res_files})
 

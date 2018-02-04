@@ -4,6 +4,7 @@
 #include <vitasdk.h>
 
 SceBool storage_location;
+SceInt theme;
 
 SceInt Options_LoadConfig(SceVoid);
 SceInt Menu_Options(SceVoid);

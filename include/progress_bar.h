@@ -3,6 +3,6 @@
 
 #include <vitasdk.h>
 
-SceVoid ProgressBar_DisplayProgress(char *msg, char *src, SceInt offset, SceInt size);
+SceVoid ProgressBar_DisplayProgress(char *msg, char *src, SceULong64 offset, SceULong64 size);
 
 #endif
