@@ -32,7 +32,7 @@ static SceInt MicrotarWrite_AddFileToTar(char *src)
 			totalRead += bytesRead; // Accumulate read data
 			totalWritten += mtar_write_data(&tar, buffer, bytesRead); // Write data
 		
-			ProgressBar_DisplayProgress("Backing up...", Utils_Basename(src), totalRead, size);
+			ProgressBar_DisplayProgress("Backing in progress...", Utils_Basename(src), totalRead, size);
 		}
 
 		if (totalRead != totalWritten) // Insufficient copy

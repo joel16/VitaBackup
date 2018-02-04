@@ -5,7 +5,7 @@
 #include "touch.h"
 #include "utils.h"
 
-#define MAX_MENU_ITEMS 8
+#define MAX_MENU_ITEMS 9
 #define LIST_PER_PAGE  5
 #define DISTANCE_Y     80
 
@@ -24,7 +24,8 @@ SceInt Menu_Backup(SceVoid)
 		"User and Hardware IDs",
 		"Licenses",
 		"Database",
-		"Activation"
+		"Activation",
+		"VPK"
 	};
 
 	const char * items_desc[] = 
@@ -36,7 +37,8 @@ SceInt Menu_Backup(SceVoid)
 		"/id.dat",
 		"/license/",
 		"ur0:shell/db/app.db",
-		"tm0:/npdrm/act.dat"
+		"tm0:/npdrm/act.dat",
+		"ux0:/vpk/"
 	};
 
 	SceBool enable[MAX_MENU_ITEMS + 1];
@@ -126,6 +128,8 @@ SceInt Menu_Backup(SceVoid)
 				MicrotarWrite_AddToTar("ur0:shell/db/app.db");
 			if (enable[7] == SCE_TRUE)
 				MicrotarWrite_AddToTar("tm0:/npdrm/act.dat");
+			if (enable[8] == SCE_TRUE)
+				MicrotarWrite_AddToTar("ux0:/vpk");
 		}
 	}
 

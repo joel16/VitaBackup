@@ -4,6 +4,7 @@
 #include "fs.h"
 #include "menu_options.h"
 #include "menu_restore.h"
+#include "microtar_read.h"
 #include "textures.h"
 #include "touch.h"
 #include "utils.h"
@@ -163,8 +164,8 @@ static SceInt Restore_DisplayFiles(SceVoid)
 
 			char * ext = strrchr(file->name, '.');
 
-			//if (strncasecmp(ext ,".tar") == 0)
-			//	vita2d_draw_texture(dbIcon, 80, 130 + (86 * printed));
+			if (strncasecmp(ext ,".tar", 4) == 0)
+				vita2d_draw_texture(i == selection? ico_container_zip_selected : ico_container_zip, 115, 86 + (DISTANCE_Y * printed));
 			
 			char buf[64], path[500], size[16];;
 
@@ -176,7 +177,7 @@ static SceInt Restore_DisplayFiles(SceVoid)
 			while (len -- > 0)
 				strcat(buf, " ");
 
-			vita2d_pvf_draw_text(font, 125, 110 + (DISTANCE_Y * printed), i == selection? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, buf); // printf file name
+			vita2d_pvf_draw_text(font, 200, 110 + (DISTANCE_Y * printed), i == selection? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, buf); // printf file name
 
 			strcpy(path, cwd);
 			strcpy(path + strlen(path), file->name);
@@ -187,7 +188,7 @@ static SceInt Restore_DisplayFiles(SceVoid)
 			if (!file->isDir)
 			{
 				Utils_GetSizeString(size, FS_GetFileSize(path)); // Get size for files only
-				vita2d_pvf_draw_textf(font, 125, (110 + (DISTANCE_Y * printed)) + 35, i == selection? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, "%s %s - %s", dateStr, timeStr, size);
+				vita2d_pvf_draw_textf(font, 200, (110 + (DISTANCE_Y * printed)) + 35, i == selection? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, "%s %s - %s", dateStr, timeStr, size);
 			}
 
 			printed++; // Increase printed counter
@@ -197,6 +198,17 @@ static SceInt Restore_DisplayFiles(SceVoid)
 	}
 
 	vita2d_end_frame();
+}
+
+static File *Restore_FindIndex(SceInt index)
+{
+	SceInt i = 0;
+	File *file = files; 
+	
+	for(; file != NULL && i != index; file = file->next) 
+		i++;
+
+	return file;
 }
 
 SceInt Menu_Restore(SceVoid)
@@ -240,6 +252,19 @@ SceInt Menu_Restore(SceVoid)
 				enable[selection] = SCE_FALSE; 
 			
 			Restore_DisplayFiles();
+		}
+
+		if (pressed & SCE_CTRL_START)
+		{
+			File *file = Restore_FindIndex(selection);
+			
+			char path[256], filename[256];
+			strcpy(filename, file->name);
+	
+			strcpy(path, cwd);
+			strcpy(path + strlen(path), file->name);
+			
+			MicrotarRead_ExtractTar(path, "ux0:");
 		}
 
 		if (pressed & SCE_CTRL_CIRCLE)

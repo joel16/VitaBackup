@@ -52,12 +52,14 @@ include_directories(
 add_executable(${SHORT_NAME}
 	${vitaident_res}
 	source/fs.c
+	source/log.c
 	source/main.c
 	source/menus/menu_backup.c
 	source/menus/menu_main.c
 	source/menus/menu_options.c
 	source/menus/menu_restore.c
 	source/microtar/microtar.c
+	source/microtar/microtar_read.c
 	source/microtar/microtar_write.c
 	source/progress_bar.c
 	source/textures.c
