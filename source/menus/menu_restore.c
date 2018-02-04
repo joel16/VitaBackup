@@ -126,7 +126,7 @@ static SceInt Restore_PopulateBackups(SceBool refresh)
 		selection = 0; // Refresh selection
 }
 
-SceBool enable[MAX_MENU_ITEMS + 1];
+static SceBool enable[MAX_MENU_ITEMS + 1];
 
 static SceInt Restore_DisplayFiles(SceVoid)
 {

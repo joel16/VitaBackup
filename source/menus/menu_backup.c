@@ -43,11 +43,22 @@ SceInt Menu_Backup(SceVoid)
 	};
 
 	SceBool enable[MAX_MENU_ITEMS + 1];
+	memset(enable, 0, sizeof(enable)); // Reset all enabled data
 
 	double scroll_length = (372.0 / ((double)MAX_MENU_ITEMS - 1.0));
 
 	while (1)
 	{
+		Utils_HandleControls();
+
+		if (pressed & SCE_CTRL_CROSS)
+		{
+			if (!enable[selection])
+				enable[selection] = SCE_TRUE;
+			else
+				enable[selection] = SCE_FALSE;
+		}
+		
 		vita2d_start_drawing();
 		vita2d_clear_screen();
 
@@ -81,16 +92,6 @@ SceInt Menu_Backup(SceVoid)
 		}
 
 		vita2d_end_frame();
-
-		Utils_HandleControls();
-
-		if (pressed & SCE_CTRL_CROSS)
-		{
-			if (!enable[selection])
-				enable[selection] = SCE_TRUE;
-			else
-				enable[selection] = SCE_FALSE; 
-		}
 
 		if (pressed & SCE_CTRL_DOWN)
 		{
