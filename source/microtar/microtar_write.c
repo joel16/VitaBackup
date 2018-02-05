@@ -127,7 +127,7 @@ SceInt MicrotarWrite_AddToTar(char *src)
 	char *path = (char *)malloc(128);
 	char *dateStr = (char *)malloc(24);
 	Utils_GetDateString(dateStr, 0, time, SCE_FALSE);
-	snprintf(path, 128, "%s:/data/VitaBackup/backups/%s-%s.tar", storage_location == SCE_FALSE? "ux0" : "ur0", 
+	snprintf(path, 128, "%s:/data/VitaBackup/backups/%s-%s.vbup", storage_location == SCE_FALSE? "ux0" : "ur0", 
 		Utils_RemoveExt(Utils_Basename(src)), dateStr);
 
 	if (FS_FileExists(path))

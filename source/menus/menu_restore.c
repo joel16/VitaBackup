@@ -81,7 +81,7 @@ static SceInt Restore_PopulateBackups(SceBool refresh)
 
 				// Ignore anything that is not a tar file
 				char * ext = strrchr(item->name, '.');
-				if (strcmp(ext, ".tar") != 0) 
+				if (strcmp(ext, ".vbup") != 0) 
 					continue;
 
 				// Set Folder Flag
@@ -164,7 +164,7 @@ static SceInt Restore_DisplayFiles(SceVoid)
 
 			char * ext = strrchr(file->name, '.');
 
-			if (strncasecmp(ext ,".tar", 4) == 0)
+			if (strncasecmp(ext ,".vbup", 4) == 0)
 				vita2d_draw_texture(i == selection? ico_container_zip_selected[theme] : ico_container_zip[theme], 115, 86 + (DISTANCE_Y * printed));
 			
 			char buf[64], path[500], size[16];;
