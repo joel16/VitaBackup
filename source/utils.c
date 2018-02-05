@@ -110,3 +110,23 @@ char *Utils_RemoveExt(char *filename)
 
    	return ret;
 }
+
+SceInt Utils_LockPower(SceVoid)
+{
+	SceInt ret = 0;
+
+	if (R_FAILED(ret = sceShellUtilLock(SCE_SHELL_UTIL_LOCK_TYPE_PS_BTN | SCE_SHELL_UTIL_LOCK_TYPE_QUICK_MENU)))
+		return ret;
+
+	return 0;
+}
+
+SceInt Utils_UnlockPower(SceVoid)
+{
+	SceInt ret = 0;
+
+	if (R_FAILED(ret = sceShellUtilUnlock(SCE_SHELL_UTIL_LOCK_TYPE_PS_BTN | SCE_SHELL_UTIL_LOCK_TYPE_QUICK_MENU)))
+		return ret;
+
+	return 0;
+}

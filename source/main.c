@@ -3,6 +3,7 @@
 #include "menu_options.h"
 #include "textures.h"
 #include "touch.h"
+#include "utils.h"
 
 static SceVoid Init_Services(SceVoid)
 {
@@ -20,6 +21,8 @@ static SceVoid Init_Services(SceVoid)
 		FS_RemoveFile("ux0:data/VitaBackup/log.txt");
 
 	Options_LoadConfig();
+
+	sceShellUtilInitEvents(0);	// Initialize sceShellEvents to lock power button and auto suspend during backup/restore.
 }
 
 static SceVoid Term_Services(SceVoid)

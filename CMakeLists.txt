@@ -14,7 +14,7 @@ include("${VITASDK}/share/vita.cmake" REQUIRED)
 
 set(VITA_APP_NAME "Vita Backup")
 set(VITA_TITLEID  "VITABUP00")
-set(VITA_VERSION  "01.00")
+set(VITA_VERSION  "01.10")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Werror -O2 -mword-relocations -fomit-frame-pointer -ffunction-sections")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fno-exceptions -std=gnu++11")
@@ -87,6 +87,7 @@ target_link_libraries(${SHORT_NAME}
 	SceNetCtl_stub
 	ScePower_stub
 	ScePvf_stub
+	SceShellSvc_stub
 	SceSysmodule_stub
 	SceTouch_stub 
 	SceUdcd_stub
