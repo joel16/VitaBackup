@@ -74,15 +74,15 @@ SceVoid Utils_GetDateString(char string[24], SceInt date_format, SceDateTime tim
 	switch (date_format) 
 	{
 		case SCE_SYSTEM_PARAM_DATE_FORMAT_YYYYMMDD:
-			snprintf(string, 24, "%04d%s%02d%s%02d", time_local.year, slash? "/" : "", time_local.month, slash? "/" : "", time_local.day);
+			snprintf(string, 24, "%04d%s%02d%s%02d", time_local.year, slash? "/" : "-", time_local.month, slash? "/" : "-", time_local.day);
 			break;
 
 		case SCE_SYSTEM_PARAM_DATE_FORMAT_DDMMYYYY:
-			snprintf(string, 24, "%02d%s%02d%s%04d", time_local.day, slash? "/" : "", time_local.month, slash? "/" : "", time_local.year);
+			snprintf(string, 24, "%02d%s%02d%s%04d", time_local.day, slash? "/" : "-", time_local.month, slash? "/" : "-", time_local.year);
 			break;
 
 		case SCE_SYSTEM_PARAM_DATE_FORMAT_MMDDYYYY:
-			snprintf(string, 24, "%02d%s%02d%s%04d", time_local.month, slash? "/" : "", time_local.day, slash? "/" : "", time_local.year);
+			snprintf(string, 24, "%02d%s%02d%s%04d", time_local.month, slash? "/" : "-", time_local.day, slash? "/" : "-", time_local.year);
 			break;
 	}
 }
@@ -129,4 +129,46 @@ SceInt Utils_UnlockPower(SceVoid)
 		return ret;
 
 	return 0;
+}
+
+SceInt Utils_InitAppUtil(SceVoid)
+{
+	SceAppUtilInitParam init;
+	SceAppUtilBootParam boot;
+	memset(&init, 0, sizeof(SceAppUtilInitParam));
+	memset(&boot, 0, sizeof(SceAppUtilBootParam));
+	
+	SceInt ret = 0;
+	
+	if (R_FAILED(ret = sceAppUtilInit(&init, &boot)))
+		return ret;
+	
+	return 0;
+}
+
+SceInt Utils_TermAppUtil(SceVoid)
+{
+	SceInt ret = 0;
+	
+	if (R_FAILED(ret = sceAppUtilShutdown()))
+		return ret;
+	
+	return 0;
+}
+
+SceVoid Utils_GetEnterButton(SceVoid)
+{
+	int enterButton = 0;
+	sceAppUtilSystemParamGetInt(SCE_SYSTEM_PARAM_ID_ENTER_BUTTON, &enterButton);
+	
+	if (enterButton == SCE_SYSTEM_PARAM_ENTER_BUTTON_CIRCLE)
+	{
+		SCE_CTRL_ENTER = SCE_CTRL_CIRCLE;
+		SCE_CTRL_CANCEL = SCE_CTRL_CROSS;
+	}
+	else
+	{
+		SCE_CTRL_ENTER = SCE_CTRL_CROSS;
+		SCE_CTRL_CANCEL = SCE_CTRL_CIRCLE;
+	}
 }

@@ -84,7 +84,7 @@ SceInt Menu_Options(SceVoid)
 		vita2d_pvf_draw_text(font, (960 - title_width) / 2, 50, COLOUR_TEXT, 1.5f, "Options");
 
 		vita2d_pvf_draw_text(font, 125, 110, selection == 0? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, "Backup destination:"); 
-		//vita2d_pvf_draw_text(font, 125, 235, selection == 1? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, "Theme:"); 
+		vita2d_pvf_draw_text(font, 125, 235, selection == 1? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, "Theme:"); 
 		
 		/* Row 1*/
 		vita2d_pvf_draw_text(font, 125, 155, row_1 == 0? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, "ux0");
@@ -100,7 +100,7 @@ SceInt Menu_Options(SceVoid)
 			vita2d_draw_texture(storage_location == SCE_TRUE? checkbox_full[theme] : checkbox_empty[theme], 590, 130);
 
 		/* Row 2*/
-		/*vita2d_pvf_draw_text(font, 125, 280, row_2 == 0? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, "Phalaris");
+		vita2d_pvf_draw_text(font, 125, 280, row_2 == 0? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, "Phalaris");
 		if (row_2 == 0)
 			vita2d_draw_texture(theme == 0? checkbox_full_selected[theme] : checkbox_empty_selected[theme], 240, 255);
 		else
@@ -110,13 +110,13 @@ SceInt Menu_Options(SceVoid)
 		if (row_2 == 1)
 			vita2d_draw_texture(theme == 1? checkbox_full_selected[theme] : checkbox_empty_selected[theme], 610, 255);
 		else
-			vita2d_draw_texture(theme == 1? checkbox_full[theme] : checkbox_empty[theme], 610, 255);*/
+			vita2d_draw_texture(theme == 1? checkbox_full[theme] : checkbox_empty[theme], 610, 255);
 
 		vita2d_end_frame();
 
 		Utils_HandleControls();
 
-		/*if (pressed & SCE_CTRL_DOWN)
+		if (pressed & SCE_CTRL_DOWN)
 		{
 			if (selection < (MAX_MENU_ITEMS - 1))
 				selection++;
@@ -129,7 +129,7 @@ SceInt Menu_Options(SceVoid)
 				selection--;
 			else 
 				selection = (MAX_MENU_ITEMS - 1);
-		}*/
+		}
 
 		switch (selection)
 		{
@@ -149,7 +149,7 @@ SceInt Menu_Options(SceVoid)
 						row_1 = (MAX_MENU_ITEMS_ROW1 - 1);
 				}
 
-				if (pressed & SCE_CTRL_CROSS)
+				if (pressed & SCE_CTRL_ENTER)
 				{
 					switch (row_1)
 					{
@@ -180,7 +180,7 @@ SceInt Menu_Options(SceVoid)
 						row_2 = (MAX_MENU_ITEMS_ROW1 - 1);
 				}
 
-				if (pressed & SCE_CTRL_CROSS)
+				if (pressed & SCE_CTRL_ENTER)
 				{
 					switch (row_2)
 					{
@@ -197,7 +197,7 @@ SceInt Menu_Options(SceVoid)
 				break;
 		}
 
-		if (pressed & SCE_CTRL_CIRCLE)
+		if (pressed & SCE_CTRL_CANCEL)
 			break;
 	}
 

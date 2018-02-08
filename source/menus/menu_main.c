@@ -48,7 +48,7 @@ SceVoid Menu_Main(SceVoid)
 		if (selection < 0)
 			selection = MAX_MENU_ITEMS;
 
-		if (pressed & SCE_CTRL_CROSS)
+		if (pressed & SCE_CTRL_ENTER)
 		{
 			switch (selection)
 			{

@@ -79,15 +79,11 @@ static SceInt Restore_PopulateBackups(SceBool refresh)
 				// Copy File Name
 				strcpy(item->name, entry.d_name);
 
-				// Ignore anything that is not a tar file
-				char * ext = strrchr(item->name, '.');
-				if (strcmp(ext, ".vbup") != 0) 
-					continue;
-
-				// Set Folder Flag
 				item->isDir = SCE_S_ISDIR(entry.d_stat.st_mode);
 
-				if (item->isDir)
+				// Ignore anything that is not a tar/vbup file
+				char * ext = strrchr(item->name, '.');
+				if ((strcmp(ext, ".vbup") != 0) || (strcmp(ext, ".tar") != 0))
 					continue;
 
 				// New List
@@ -153,7 +149,8 @@ static SceInt Restore_DisplayFiles(SceVoid)
 		if (printed == LIST_PER_PAGE) 
 			break;
 
-		vita2d_draw_texture(scroll_pointer[theme], 922, 56 + (scroll_length * selection)); // can't go more than y = 428 or it will be out of bounds
+		if (fileCount > 5) // Draw scroll only if there are more than 5 objects on the screen
+			vita2d_draw_texture(scroll_pointer[theme], 922, 56 + (scroll_length * selection)); // can't go more than y = 428 or it will be out of bounds
 
 		if (selection < LIST_PER_PAGE || i > (selection - LIST_PER_PAGE))
 		{
@@ -185,7 +182,7 @@ static SceInt Restore_DisplayFiles(SceVoid)
 			Utils_GetDateString(dateStr, 0, FS_GetFileModifiedTime(path), SCE_TRUE); // Get modified date
 			Utils_GetTimeString(timeStr, 0, FS_GetFileModifiedTime(path)); // Get modified time
 			
-			if (!file->isDir)
+			if (!(file->isDir))
 			{
 				Utils_GetSizeString(size, FS_GetFileSize(path)); // Get size for files only
 				vita2d_pvf_draw_textf(font, 200, (110 + (DISTANCE_Y * printed)) + 35, i == selection? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, "%s %s - %s", dateStr, timeStr, size);
@@ -244,7 +241,7 @@ SceInt Menu_Restore(SceVoid)
 			}
 		}
 
-		if (pressed & SCE_CTRL_CROSS)
+		if (pressed & SCE_CTRL_ENTER)
 		{
 			if (!enable[selection])
 				enable[selection] = SCE_TRUE;
@@ -274,7 +271,7 @@ SceInt Menu_Restore(SceVoid)
 			Restore_DisplayFiles();
 		}
 
-		if (pressed & SCE_CTRL_CIRCLE)
+		if (pressed & SCE_CTRL_CANCEL)
 			break;
 	}
 

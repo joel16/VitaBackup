@@ -23,10 +23,13 @@ static SceVoid Init_Services(SceVoid)
 	Options_LoadConfig();
 
 	sceShellUtilInitEvents(0);	// Initialize sceShellEvents to lock power button and auto suspend during backup/restore.
+	Utils_InitAppUtil();
+	Utils_GetEnterButton();
 }
 
 static SceVoid Term_Services(SceVoid)
 {
+	Utils_TermAppUtil();
 	Textures_Free();
 	vita2d_fini();
 }

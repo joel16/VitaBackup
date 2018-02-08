@@ -51,7 +51,7 @@ SceInt Menu_Backup(SceVoid)
 	{
 		Utils_HandleControls();
 
-		if (pressed & SCE_CTRL_CROSS)
+		if (pressed & SCE_CTRL_ENTER)
 		{
 			if (!enable[selection])
 				enable[selection] = SCE_TRUE;
@@ -108,7 +108,7 @@ SceInt Menu_Backup(SceVoid)
 				selection = (MAX_MENU_ITEMS - 1);
 		}
 
-		if (pressed & SCE_CTRL_CIRCLE)
+		if (pressed & SCE_CTRL_CANCEL)
 			break;
 
 		// Tests so far
