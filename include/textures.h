@@ -4,7 +4,7 @@
 #include <vita2d.h>
 
 #define COLOUR_TEXT          theme == 0? RGBA8(0, 213, 140, 255) : RGBA8(12, 149, 255, 255)
-#define COLOUR_TEXT_SELECTED RGBA8(255, 255, 255, 255)
+#define COLOUR_TEXT_SELECTED theme == 0? RGBA8(255, 255, 255, 255) : RGBA8(144, 144, 144, 255)
 
 vita2d_texture *background[2], *logo[2];
 vita2d_texture *ico_main_backup[2], *ico_main_restore[2], *ico_main_options[2];

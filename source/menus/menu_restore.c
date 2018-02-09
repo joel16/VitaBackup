@@ -83,7 +83,7 @@ static SceInt Restore_PopulateBackups(SceBool refresh)
 
 				// Ignore anything that is not a tar/vbup file
 				char * ext = strrchr(item->name, '.');
-				if ((strcmp(ext, ".vbup") != 0) || (strcmp(ext, ".tar") != 0))
+				if (strcmp(ext, ".vbup") != 0)
 					continue;
 
 				// New List
