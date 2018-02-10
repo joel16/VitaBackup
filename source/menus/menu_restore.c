@@ -81,9 +81,9 @@ static SceInt Restore_PopulateBackups(SceBool refresh)
 
 				item->isDir = SCE_S_ISDIR(entry.d_stat.st_mode);
 
-				// Ignore anything that is not a tar/vbup file
+				// Ignore anything that is not a tar file
 				char * ext = strrchr(item->name, '.');
-				if (strcmp(ext, ".vbup") != 0)
+				if (strcmp(ext, ".tar") != 0)
 					continue;
 
 				// New List
@@ -127,7 +127,7 @@ static SceBool enable[MAX_MENU_ITEMS + 1];
 static SceInt Restore_DisplayFiles(SceVoid)
 {
 	double scroll_length = (372.0 / ((double)fileCount - 1.0));
-	int title_width = vita2d_pvf_text_width(font, 1.5f, "Select restore data");
+	SceInt title_width = vita2d_pvf_text_width(font, 1.5f, "Select restore data");
 
 	vita2d_start_drawing();
 	vita2d_clear_screen();
@@ -161,7 +161,7 @@ static SceInt Restore_DisplayFiles(SceVoid)
 
 			char * ext = strrchr(file->name, '.');
 
-			if (strncasecmp(ext ,".vbup", 4) == 0)
+			if (strncasecmp(ext ,".tar", 4) == 0)
 				vita2d_draw_texture(i == selection? ico_container_zip_selected[theme] : ico_container_zip[theme], 115, 86 + (DISTANCE_Y * printed));
 			
 			char buf[64], path[500], size[16];;
