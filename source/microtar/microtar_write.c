@@ -119,8 +119,6 @@ static SceInt MicrotarWrite_AddFileToTarRec(char *src)
 
 SceInt MicrotarWrite_AddToTar(char *src)
 {
-	Utils_LockPower();
-	
 	SceDateTime time;
 	sceRtcGetCurrentClockLocalTime(&time);
 
@@ -155,6 +153,4 @@ SceInt MicrotarWrite_AddToTar(char *src)
 	free(dateStr);
 	mtar_finalize(&tar); // Finalize archive
 	mtar_close(&tar); // Close archive
-
-	Utils_UnlockPower();
 }

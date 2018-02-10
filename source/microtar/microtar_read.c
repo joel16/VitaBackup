@@ -45,8 +45,6 @@ static SceInt MicrotarRead_ExtractFileFromTarRec(char *dst)
 
 SceInt MicrotarRead_ExtractTar(char *src, char *dst)
 {
-	Utils_LockPower();
-
 	tarSize = FS_GetFileSize(src); // Get input file size
 
 	/* Open archive for writing */
@@ -56,6 +54,4 @@ SceInt MicrotarRead_ExtractTar(char *src, char *dst)
 
 	mtar_finalize(&tar); // Finalize archive
 	mtar_close(&tar); // Close archive
-
-	Utils_UnlockPower();
 }

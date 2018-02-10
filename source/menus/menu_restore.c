@@ -265,7 +265,9 @@ SceInt Menu_Restore(SceVoid)
 					strcpy(path, cwd);
 					strcpy(path + strlen(path), file->name);
 			
+					Utils_LockPower();
 					MicrotarRead_ExtractTar(path, "ux0:");
+					Utils_UnlockPower();
 				}
 			}
 			Restore_DisplayFiles();

@@ -53,7 +53,7 @@ SceInt Menu_Backup(SceVoid)
 	}
 
 	fclose(file);
-	
+
 	SceBool enable[count + 1];
 	memset(enable, 0, sizeof(enable)); // Reset all enabled data
 
@@ -129,8 +129,12 @@ SceInt Menu_Backup(SceVoid)
 		{
 			for (SceInt i = 0; i < count + 1; i++)
 			{
-				if (enable[i] == SCE_TRUE)		
+				if (enable[i] == SCE_TRUE)
+				{
+					Utils_LockPower();
 					MicrotarWrite_AddToTar(items_path[i]);
+					Utils_UnlockPower();
+				}		
 			}
 		}
 	}
