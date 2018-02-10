@@ -1,4 +1,8 @@
+#include <stdio.h>
+#include <string.h>
+
 #include "fs.h"
+#include "log.h"
 #include "menu_backup.h"
 #include "menu_options.h"
 #include "microtar_write.h"
@@ -6,7 +10,6 @@
 #include "touch.h"
 #include "utils.h"
 
-#define MAX_MENU_ITEMS 9
 #define LIST_PER_PAGE  5
 #define DISTANCE_Y     80
 
@@ -14,9 +17,18 @@ SceInt Menu_Backup(SceVoid)
 {
 	SceInt selection = 0;
 
-	int title_width = vita2d_pvf_text_width(font, 1.5f, "Select backup data");
+	SceInt title_width = vita2d_pvf_text_width(font, 1.5f, "Select backup data");
 
-	const char * items[] = 
+	char line[256];
+	char items[256][51];
+	char items_path[256][101];
+	SceInt count = 0;
+
+	FILE *file = NULL;
+
+	if (FS_FileExists("ur0:/data/VitaBackup/path.txt"))
+		file = fopen("ur0:/data/VitaBackup/path.txt", "r");
+	else
 	{
 		"Encrypted savedata",
 		"Decrypted savedata",
@@ -31,21 +43,17 @@ SceInt Menu_Backup(SceVoid)
 
 	const char * items_desc[] = 
 	{
-		"/user/00/savedata/",
-		"/data/savegames/",
-		"/user/00/trophy/",
-		"vd0:/registry",
-		"/id.dat",
-		"/license/",
-		"ur0:shell/db/app.db",
-		"tm0:/npdrm/act.dat",
-		"ux0:/vpk/"
-	};
+		sscanf(line, "%[^~]~%[^~]", items[count], items_path[count]);
+		items_path[count][strcspn(items_path[count], "\r\n")] = 0; // Remove trailing new line from fgets.
+		count++;
+	}
 
-	SceBool enable[MAX_MENU_ITEMS + 1];
+	fclose(file);
+	
+	SceBool enable[count + 1];
 	memset(enable, 0, sizeof(enable)); // Reset all enabled data
 
-	double scroll_length = (372.0 / ((double)MAX_MENU_ITEMS - 1.0));
+	double scroll_length = (372.0 / ((double)count - 1.0));
 
 	while (1)
 	{
@@ -70,12 +78,13 @@ SceInt Menu_Backup(SceVoid)
 
 		SceInt printed = 0; // Print counter
 
-		for (int i = 0; i < MAX_MENU_ITEMS + 1; i++)
+		for (int i = 0; i < count + 1; i++)
 		{
 			if (printed == LIST_PER_PAGE)
 				break;
 
-			vita2d_draw_texture(scroll_pointer[theme], 922, 56 + (scroll_length * selection)); // can't go more than y = 428 or it will be out of bounds
+			if (count > 5) 
+				vita2d_draw_texture(scroll_pointer[theme], 922, 56 + (scroll_length * selection)); // can't go more than y = 428 or it will be out of bounds
 
 			if (selection < LIST_PER_PAGE || i > (selection - LIST_PER_PAGE))
 			{
@@ -85,7 +94,7 @@ SceInt Menu_Backup(SceVoid)
 					vita2d_draw_texture(enable[i] == SCE_TRUE? checkbox_full[theme] : checkbox_empty[theme], 50, (110 + (DISTANCE_Y * printed)) - 10);
 
 				vita2d_pvf_draw_text(font, 125, 110 + (DISTANCE_Y * printed), i == selection? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, items[i]);
-				vita2d_pvf_draw_text(font, 125, (110 + (DISTANCE_Y * printed)) + 35, i == selection? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, items_desc[i]);
+				vita2d_pvf_draw_text(font, 125, (110 + (DISTANCE_Y * printed)) + 35, i == selection? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, items_path[i]);
 
 				printed++;
 			}
@@ -95,7 +104,7 @@ SceInt Menu_Backup(SceVoid)
 
 		if (pressed & SCE_CTRL_DOWN)
 		{
-			if (selection < (MAX_MENU_ITEMS - 1))
+			if (selection < (count - 1))
 				selection++;
 			else 
 				selection = 0;
@@ -105,7 +114,7 @@ SceInt Menu_Backup(SceVoid)
 			if (selection > 0)
 				selection--;
 			else 
-				selection = (MAX_MENU_ITEMS - 1);
+				selection = (count - 1);
 		}
 
 		if (pressed & SCE_CTRL_CANCEL)
@@ -114,24 +123,11 @@ SceInt Menu_Backup(SceVoid)
 		// Tests so far
 		if (pressed & SCE_CTRL_START)
 		{
-			if (enable[0] == SCE_TRUE)
-				MicrotarWrite_AddToTar("ux0:/user/00/savedata");
-			if (enable[1] == SCE_TRUE)
-				MicrotarWrite_AddToTar("ux0:/data/savegames");
-			if (enable[2] == SCE_TRUE)
-				MicrotarWrite_AddToTar("ux0:/user/00/trophy");
-			if (enable[3] == SCE_TRUE)
-				MicrotarWrite_AddToTar("vd0:/registry");
-			if (enable[4] == SCE_TRUE)
-				MicrotarWrite_AddToTar("ux0:/id.dat");
-			if (enable[5] == SCE_TRUE)
-				MicrotarWrite_AddToTar("ux0:/license");
-			if (enable[6] == SCE_TRUE)
-				MicrotarWrite_AddToTar("ur0:shell/db/app.db");
-			if (enable[7] == SCE_TRUE)
-				MicrotarWrite_AddToTar("tm0:/npdrm/act.dat");
-			if (enable[8] == SCE_TRUE)
-				MicrotarWrite_AddToTar("ux0:/vpk");
+			for (SceInt i = 0; i < count + 1; i++)
+			{
+				if (enable[i] == SCE_TRUE)		
+					MicrotarWrite_AddToTar(items_path[i]);
+			}
 		}
 	}
 
