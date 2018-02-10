@@ -4,6 +4,7 @@
 #include "fs.h"
 #include "menu_options.h"
 #include "textures.h"
+#include "touch.h"
 #include "utils.h"
 
 #define MAX_MENU_ITEMS 2
@@ -70,7 +71,7 @@ SceInt Menu_Options(SceVoid)
 {
 	SceInt selection = 0, row_1 = 0, row_2 = 0;
 
-	int title_width = vita2d_pvf_text_width(font, 1.5f, "Options");
+	SceInt title_width = vita2d_pvf_text_width(font, 1.5f, "Options");
 
 	Options_LoadConfig(); // Reload config
 
@@ -115,6 +116,48 @@ SceInt Menu_Options(SceVoid)
 		vita2d_end_frame();
 
 		Utils_HandleControls();
+		Touch_Update();
+
+		if (Touch_GetX() >= 180 && Touch_GetX() <= 232 && Touch_GetY() >= 120 && Touch_GetY() <= 172)
+		{
+			row_1 = 0;
+
+			if (Touch_CheckPressed())
+			{
+				storage_location = SCE_FALSE;
+				Options_SaveConfig(storage_location, theme);
+			}
+		}
+		else if (Touch_GetX() >= 580 && Touch_GetX() <= 632 && Touch_GetY() >= 120 && Touch_GetY() <= 172)
+		{
+			row_1 = 1;
+
+			if (Touch_CheckPressed())
+			{
+				storage_location = SCE_TRUE;
+				Options_SaveConfig(storage_location, theme);
+			}
+		}
+		else if (Touch_GetX() >= 230 && Touch_GetX() <= 282 && Touch_GetY() >= 245 && Touch_GetY() <= 297)
+		{
+			row_2 = 0;
+
+			if (Touch_CheckPressed())
+			{
+				theme = 0;
+				Options_SaveConfig(storage_location, theme);
+			}
+		}
+		else if (Touch_GetX() >= 600 && Touch_GetX() <= 652 && Touch_GetY() >= 245 && Touch_GetY() <= 297)
+		{
+			row_2 = 1;
+
+			if (Touch_CheckPressed())
+			{
+				theme = 1;
+				Options_SaveConfig(storage_location, theme);
+			}
+		}
 
 		if (pressed & SCE_CTRL_DOWN)
 		{
