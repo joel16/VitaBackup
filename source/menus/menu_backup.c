@@ -30,18 +30,22 @@ SceInt Menu_Backup(SceVoid)
 		file = fopen("ur0:/data/VitaBackup/path.txt", "r");
 	else
 	{
-		"Encrypted savedata",
-		"Decrypted savedata",
-		"Trophies",
-		"System Settings and User Information",
-		"User and Hardware IDs",
-		"Licenses",
-		"Database",
-		"Activation",
-		"VPK"
-	};
+		file = fopen("ur0:/data/VitaBackup/path.txt", "w"); // Create default path file:
+		fprintf(file, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s", 
+			"Encrypted savedata~ux0:/user/00/savedata",
+			"Decrypted savedata~ux0:/data/savegames",
+			"Trophies~ux0:/user/00/trophy",
+			"System Settings and User Information~vd0:/registry",
+			"User and Hardware IDs~ux0:/id.dat",
+			"Licenses~ux0:/license",
+			"Database~ur0:shell/db/app.db",
+			"Activation~tm0:/npdrm/act.dat");
+		fclose(file);
 
-	const char * items_desc[] = 
+		file = fopen("ur0:/data/VitaBackup/path.txt", "r"); // Now re-open in r mode.
+	}
+
+	while (fgets(line, sizeof line, file) != NULL) 
 	{
 		sscanf(line, "%[^~]~%[^~]", items[count], items_path[count]);
 		items_path[count][strcspn(items_path[count], "\r\n")] = 0; // Remove trailing new line from fgets.
