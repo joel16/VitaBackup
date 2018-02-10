@@ -44,21 +44,30 @@ SceVoid Menu_Main(SceVoid)
 			selection = 0;
 
 			if (Touch_CheckPressed())
+			{
+				Touch_Reset();
 				selection = Menu_Backup();
+			}
 		}
 		else if (Touch_GetX() >= ((960 - icon_width) / 2) && Touch_GetX() <= 536 && Touch_GetY() >= 290 && Touch_GetY() <= 402)
 		{
 			selection = 1;
 
 			if (Touch_CheckPressed())
+			{
+				Touch_Reset();
 				selection = Menu_Restore();
+			}
 		}
 		else if (Touch_GetX() >= (((960 - icon_width) / 2) + (icon_width + 100)) && Touch_GetX() <= 748 && Touch_GetY() >= 290 && Touch_GetY() <= 402)
 		{
 			selection = 2;
 
 			if (Touch_CheckPressed())
-					selection = Menu_Options();
+			{
+				Touch_Reset();
+				selection = Menu_Options();
+			}
 		}
 
 		if (pressed & SCE_CTRL_RIGHT)

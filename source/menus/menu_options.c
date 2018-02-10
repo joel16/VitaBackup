@@ -124,6 +124,7 @@ SceInt Menu_Options(SceVoid)
 
 			if (Touch_CheckPressed())
 			{
+				Touch_Reset();
 				storage_location = SCE_FALSE;
 				Options_SaveConfig(storage_location, theme);
 			}
@@ -134,6 +135,7 @@ SceInt Menu_Options(SceVoid)
 
 			if (Touch_CheckPressed())
 			{
+				Touch_Reset();
 				storage_location = SCE_TRUE;
 				Options_SaveConfig(storage_location, theme);
 			}
@@ -144,6 +146,7 @@ SceInt Menu_Options(SceVoid)
 
 			if (Touch_CheckPressed())
 			{
+				Touch_Reset();
 				theme = 0;
 				Options_SaveConfig(storage_location, theme);
 			}
@@ -154,6 +157,7 @@ SceInt Menu_Options(SceVoid)
 
 			if (Touch_CheckPressed())
 			{
+				Touch_Reset();
 				theme = 1;
 				Options_SaveConfig(storage_location, theme);
 			}

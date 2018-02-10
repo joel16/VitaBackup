@@ -25,11 +25,8 @@ typedef struct
 
 touchStateData* touchState;
 
-SceInt touchInit(SceVoid) 
+SceVoid Touch_Reset(SceVoid) 
 {
-	sceTouchSetSamplingState(SCE_TOUCH_PORT_FRONT, 1);
-	
-	touchState = malloc(sizeof(touchStateData));
 	touchState->posX = 0;
 	touchState->posY = 0;
 	touchState->held = 0;
@@ -37,6 +34,14 @@ SceInt touchInit(SceVoid)
 	touchState->pressedPrev = 0;
 	touchState->released = 0;
 	touchState->releasedPrev = 0;
+}
+
+SceInt touchInit(SceVoid) 
+{
+	sceTouchSetSamplingState(SCE_TOUCH_PORT_FRONT, 1);
+	
+	touchState = malloc(sizeof(touchStateData));
+	Touch_Reset();
 	
 	return 1;
 }

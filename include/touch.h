@@ -15,8 +15,8 @@
 
 SceTouchData touch;
 
+SceVoid Touch_Reset(SceVoid);
 SceInt touchInit(SceVoid);
-
 SceInt Touch_GetX(SceVoid);
 SceInt Touch_GetY(SceVoid);
 SceInt Touch_CheckPressed(SceVoid);
