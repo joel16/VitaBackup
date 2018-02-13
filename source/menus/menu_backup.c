@@ -38,7 +38,7 @@ SceInt Menu_Backup(SceVoid)
 			"System Settings and User Information~vd0:/registry",
 			"User and Hardware IDs~ux0:/id.dat",
 			"Licenses~ux0:/license",
-			"Database~ur0:shell/db/app.db",
+			"Database~ur0:/shell/db/app.db",
 			"Activation~tm0:/npdrm/act.dat");
 		fclose(file);
 
