@@ -31,6 +31,26 @@ SceBool FS_DirExists(const char *path)
 	return SCE_FALSE;
 }
 
+char *FS_Gets(char *str, SceInt n, SceUID stream) 
+{
+	SceInt i = 0, bytes = 0;
+	
+	while((i < n) && (bytes = sceIoRead(stream, str + i, 1)) == 1)
+	{
+		if (str[i] == -1 || str[i] == '\n')
+			break;
+		
+		i ++;
+	}
+	
+	str[i] = 0;
+	
+	if (bytes != 1 && i == 0)
+		return NULL;
+
+	return str;
+}
+
 SceInt FS_ReadFile(char *path, SceVoid *buf, SceInt size) 
 {
 	SceUID file = 0;

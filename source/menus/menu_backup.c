@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "fs.h"
@@ -24,35 +25,42 @@ SceInt Menu_Backup(SceVoid)
 	char items_path[256][101];
 	SceInt count = 0;
 
-	FILE *file = NULL;
+	SceUID file = 0;
 
 	if (FS_FileExists("ur0:/data/VitaBackup/path.txt"))
-		file = fopen("ur0:/data/VitaBackup/path.txt", "r");
+		file = sceIoOpen("ur0:/data/VitaBackup/path.txt", SCE_O_RDONLY, 0);
 	else
 	{
-		file = fopen("ur0:/data/VitaBackup/path.txt", "w"); // Create default path file:
-		fprintf(file, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s", 
+		file = sceIoOpen("ur0:/data/VitaBackup/path.txt", SCE_O_WRONLY | SCE_O_CREAT | SCE_O_TRUNC, 0777); // Create default path file:
+		char *buf = (char *)malloc(1024);
+		
+		snprintf(buf, 1024, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s", 
 			"Encrypted savedata~ux0:/user/00/savedata",
 			"Decrypted savedata~ux0:/data/savegames",
 			"Trophies~ux0:/user/00/trophy",
+			"Trophies~ur0:/user/00/trophy",
 			"System Settings and User Information~vd0:/registry",
 			"User and Hardware IDs~ux0:/id.dat",
 			"Licenses~ux0:/license",
 			"Database~ur0:/shell/db/app.db",
 			"Activation~tm0:/npdrm/act.dat");
-		fclose(file);
+		
+		sceIoWrite(file, buf, strlen(buf));
+		
+		free(buf);
+		sceIoClose(file);
 
-		file = fopen("ur0:/data/VitaBackup/path.txt", "r"); // Now re-open in r mode.
+		file = sceIoOpen("ur0:/data/VitaBackup/path.txt", SCE_O_RDONLY, 0); // Now re-open in read mode.
 	}
 
-	while (fgets(line, sizeof line, file) != NULL) 
+	while (FS_Gets(line, sizeof line, file) != NULL) 
 	{
 		sscanf(line, "%[^~]~%[^~]", items[count], items_path[count]);
 		items_path[count][strcspn(items_path[count], "\r\n")] = 0; // Remove trailing new line from fgets.
 		count++;
 	}
 
-	fclose(file);
+	sceIoClose(file);
 
 	SceBool enable[count + 1];
 	memset(enable, 0, sizeof(enable)); // Reset all enabled data
