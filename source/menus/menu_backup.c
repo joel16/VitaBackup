@@ -34,8 +34,10 @@ SceInt Menu_Backup(SceVoid)
 		file = sceIoOpen("ur0:/data/VitaBackup/path.txt", SCE_O_WRONLY | SCE_O_CREAT | SCE_O_TRUNC, 0777); // Create default path file:
 		char *buf = (char *)malloc(1024);
 		
-		snprintf(buf, 1024, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s", 
+		SceInt len = snprintf(buf, 1024, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s", 
 			"Encrypted savedata~ux0:/user/00/savedata",
+			"Encrypted savedata_backup~ux0:/user/00/savedata_backup",
+			"Encrypted savedata_plus~ux0:/user/00/savedata_plus",
 			"Decrypted savedata~ux0:/data/savegames",
 			"Trophies~ux0:/user/00/trophy",
 			"Trophies~ur0:/user/00/trophy",
@@ -45,7 +47,7 @@ SceInt Menu_Backup(SceVoid)
 			"Database~ur0:/shell/db/app.db",
 			"Activation~tm0:/npdrm/act.dat");
 		
-		sceIoWrite(file, buf, strlen(buf));
+		sceIoWrite(file, buf, len);
 		
 		free(buf);
 		sceIoClose(file);
