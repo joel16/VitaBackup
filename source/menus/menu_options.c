@@ -248,5 +248,6 @@ SceInt Menu_Options(SceVoid)
 			break;
 	}
 
+	Touch_Reset();
 	return 2;
 }

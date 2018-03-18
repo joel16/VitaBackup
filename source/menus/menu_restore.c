@@ -2,6 +2,7 @@
 #include <stdlib.h>
 
 #include "fs.h"
+#include "menu_delete.h"
 #include "menu_options.h"
 #include "menu_restore.h"
 #include "microtar_read.h"
@@ -17,14 +18,14 @@
 
 typedef struct File
 {
-	struct File * next; // Next file
+	struct File *next; // Next file
 	SceBool isDir; // Folder flag
 	char name[256]; // File name
 } File;
 
 SceInt selection = 0;
 SceInt fileCount = 0;
-File * files = NULL;
+File *files = NULL;
 char cwd[128];
 
 // Free Heap Memory
@@ -128,6 +129,7 @@ static SceInt Restore_DisplayFiles(SceVoid)
 {
 	double scroll_length = (372.0 / ((double)fileCount - 1.0));
 	SceInt title_width = vita2d_pvf_text_width(font, 1.5f, "Select restore data");
+	SceInt instr_width = vita2d_pvf_text_width(font, 1.5f, "Press Start to begin restore process");
 
 	vita2d_start_drawing();
 	vita2d_clear_screen();
@@ -136,6 +138,7 @@ static SceInt Restore_DisplayFiles(SceVoid)
 	vita2d_draw_texture(scroll_bg[theme], 922, 56);
 
 	vita2d_pvf_draw_text(font, (960 - title_width) / 2, 50, COLOUR_TEXT, 1.5f, "Select restore data");
+	vita2d_pvf_draw_text(font, (960 - instr_width) / 2, 524, COLOUR_TEXT, 1.5f, "Press Start to begin restore process");
 
 	// File Iterator
 	SceInt i = 0, printed = 0;
@@ -271,6 +274,27 @@ SceInt Menu_Restore(SceVoid)
 				}
 			}
 			Restore_DisplayFiles();
+		}
+
+		if (pressed & SCE_CTRL_SQUARE)
+		{
+			for (SceInt i = 0; i < fileCount; i++)
+			{
+				if (enable[i] == SCE_TRUE)
+				{
+					File *file = Restore_FindIndex(i);
+			
+					char path[256], filename[256];
+					strcpy(filename, file->name);
+	
+					strcpy(path, cwd);
+					strcpy(path + strlen(path), file->name);
+			
+					Utils_LockPower();
+					Menu_Delete(path);
+					Utils_UnlockPower();
+				}
+			}
 		}
 
 		if (pressed & SCE_CTRL_CANCEL)

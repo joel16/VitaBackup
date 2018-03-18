@@ -19,6 +19,7 @@ SceInt Menu_Backup(SceVoid)
 	SceInt selection = 0;
 
 	SceInt title_width = vita2d_pvf_text_width(font, 1.5f, "Select backup data");
+	SceInt instr_width = vita2d_pvf_text_width(font, 1.5f, "Press Start to begin backup process");
 
 	char line[256];
 	char items[256][51];
@@ -34,11 +35,12 @@ SceInt Menu_Backup(SceVoid)
 		file = sceIoOpen("ur0:/data/VitaBackup/path.txt", SCE_O_WRONLY | SCE_O_CREAT | SCE_O_TRUNC, 0777); // Create default path file:
 		char *buf = (char *)malloc(1024);
 		
-		SceInt len = snprintf(buf, 1024, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s", 
+		SceInt len = snprintf(buf, 1024, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s", 
 			"Encrypted savedata~ux0:/user/00/savedata",
 			"Encrypted savedata_backup~ux0:/user/00/savedata_backup",
 			"Encrypted savedata_plus~ux0:/user/00/savedata_plus",
 			"Decrypted savedata~ux0:/data/savegames",
+			"PSP savedata~ux0:/PSPEMU/PSP/SAVEDATA/",
 			"Trophies~ux0:/user/00/trophy",
 			"Trophies~ur0:/user/00/trophy",
 			"System Settings and User Information~vd0:/registry",
@@ -89,6 +91,7 @@ SceInt Menu_Backup(SceVoid)
 		vita2d_draw_texture(scroll_bg[theme], 922, 56);
 
 		vita2d_pvf_draw_text(font, (960 - title_width) / 2, 50, COLOUR_TEXT, 1.5f, "Select backup data");
+		vita2d_pvf_draw_text(font, (960 - instr_width) / 2, 524, COLOUR_TEXT, 1.5f, "Press Start to begin backup process");
 
 		SceInt printed = 0; // Print counter
 

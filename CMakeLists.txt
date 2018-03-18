@@ -56,6 +56,7 @@ add_executable(${SHORT_NAME}
 	source/log.c
 	source/main.c
 	source/menus/menu_backup.c
+	source/menus/menu_delete.c
 	source/menus/menu_main.c
 	source/menus/menu_options.c
 	source/menus/menu_restore.c
