@@ -6,8 +6,7 @@
 
 static SceCtrlData pad, old_pad;
 
-SceInt Utils_HandleControls(SceVoid)
-{
+SceInt Utils_HandleControls(SceVoid) {
 	memset(&pad, 0, sizeof(SceCtrlData));
 	sceCtrlPeekBufferPositive(0, &pad, 1);
 
@@ -17,23 +16,13 @@ SceInt Utils_HandleControls(SceVoid)
 	return 0;
 }
 
-vita2d_texture *Utils_LoadPNG(const SceVoid *buffer)
-{
-	vita2d_texture *texture = vita2d_load_PNG_buffer(buffer);
-	vita2d_texture_set_filters(texture, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
-	
-	return texture;
-}
-
-SceVoid Utils_GetSizeString(char * string, SceULong64 size) //Thanks TheOfficialFloW
-{
+SceVoid Utils_GetSizeString(char *string, SceULong64 size) {//Thanks TheOfficialFloW
 	double double_size = (double)size;
 
 	SceInt i = 0;
 	static char * units[] = { "B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
 	
-	while (double_size >= 1024.0f) 
-	{
+	while (double_size >= 1024.0f) {
 		double_size /= 1024.0f;
 		i++;
 	}
@@ -41,21 +30,18 @@ SceVoid Utils_GetSizeString(char * string, SceULong64 size) //Thanks TheOfficial
 	sprintf(string, "%.*f %s", (i == 0) ? 0 : 2, double_size, units[i]);
 }
 
-static SceVoid Utils_ConvertUtcToLocalTime(SceDateTime *time_local, SceDateTime *time_utc) 
-{
+static SceVoid Utils_ConvertUtcToLocalTime(SceDateTime *time_local, SceDateTime *time_utc) {
 	SceRtcTick tick;
 	sceRtcGetTick(time_utc, &tick);
 	sceRtcConvertUtcToLocalTime(&tick, &tick);
 	sceRtcSetTick(time_local, &tick);	
 }
 
-SceVoid Utils_GetTimeString(char string[16], SceInt time_format, SceDateTime time) 
-{
+SceVoid Utils_GetTimeString(char string[16], SceInt time_format, SceDateTime time) {
 	SceDateTime time_local;
 	Utils_ConvertUtcToLocalTime(&time_local, &time);
 
-	switch(time_format) 
-	{
+	switch(time_format) {
 		case SCE_SYSTEM_PARAM_TIME_FORMAT_12HR:
 			snprintf(string, 16, "%02d:%02d %s", (time_local.hour > 12) ? (time_local.hour-12) : ((time_local.hour == 0) ? 12 : time_local.hour), time_local.minute, time_local.hour >= 12 ? "PM" : "AM");
 			break;
@@ -66,8 +52,7 @@ SceVoid Utils_GetTimeString(char string[16], SceInt time_format, SceDateTime tim
 	}
 }
 
-SceVoid Utils_GetDateString(char string[24], SceInt date_format, SceDateTime time, SceBool slash) 
-{
+SceVoid Utils_GetDateString(char string[24], SceInt date_format, SceDateTime time, SceBool slash)  {
 	SceDateTime time_local;
 	Utils_ConvertUtcToLocalTime(&time_local, &time);
 
@@ -87,14 +72,12 @@ SceVoid Utils_GetDateString(char string[24], SceInt date_format, SceDateTime tim
 	}
 }
 
-char *Utils_Basename(const char * filename)
-{
+char *Utils_Basename(const char *filename) {
 	char *p = strrchr (filename, '/');
 	return p ? p + 1 : (char *) filename;
 }
 
-char *Utils_RemoveExt(char *filename) 
-{
+char *Utils_RemoveExt(char *filename) {
 	char *ret, *lastdot;
 
    	if (filename == NULL)
@@ -111,8 +94,7 @@ char *Utils_RemoveExt(char *filename)
    	return ret;
 }
 
-SceInt Utils_LockPower(SceVoid)
-{
+SceInt Utils_LockPower(SceVoid) {
 	SceInt ret = 0;
 
 	if (R_FAILED(ret = sceShellUtilLock(SCE_SHELL_UTIL_LOCK_TYPE_PS_BTN | SCE_SHELL_UTIL_LOCK_TYPE_QUICK_MENU)))
@@ -121,8 +103,7 @@ SceInt Utils_LockPower(SceVoid)
 	return 0;
 }
 
-SceInt Utils_UnlockPower(SceVoid)
-{
+SceInt Utils_UnlockPower(SceVoid) {
 	SceInt ret = 0;
 
 	if (R_FAILED(ret = sceShellUtilUnlock(SCE_SHELL_UTIL_LOCK_TYPE_PS_BTN | SCE_SHELL_UTIL_LOCK_TYPE_QUICK_MENU)))
@@ -131,8 +112,7 @@ SceInt Utils_UnlockPower(SceVoid)
 	return 0;
 }
 
-SceInt Utils_InitAppUtil(SceVoid)
-{
+SceInt Utils_InitAppUtil(SceVoid) {
 	SceAppUtilInitParam init;
 	SceAppUtilBootParam boot;
 	memset(&init, 0, sizeof(SceAppUtilInitParam));
@@ -146,8 +126,7 @@ SceInt Utils_InitAppUtil(SceVoid)
 	return 0;
 }
 
-SceInt Utils_TermAppUtil(SceVoid)
-{
+SceInt Utils_TermAppUtil(SceVoid) {
 	SceInt ret = 0;
 	
 	if (R_FAILED(ret = sceAppUtilShutdown()))
@@ -156,18 +135,15 @@ SceInt Utils_TermAppUtil(SceVoid)
 	return 0;
 }
 
-SceVoid Utils_GetEnterButton(SceVoid)
-{
+SceVoid Utils_GetEnterButton(SceVoid) {
 	int enterButton = 0;
 	sceAppUtilSystemParamGetInt(SCE_SYSTEM_PARAM_ID_ENTER_BUTTON, &enterButton);
 	
-	if (enterButton == SCE_SYSTEM_PARAM_ENTER_BUTTON_CIRCLE)
-	{
+	if (enterButton == SCE_SYSTEM_PARAM_ENTER_BUTTON_CIRCLE) {
 		SCE_CTRL_ENTER = SCE_CTRL_CIRCLE;
 		SCE_CTRL_CANCEL = SCE_CTRL_CROSS;
 	}
-	else
-	{
+	else {
 		SCE_CTRL_ENTER = SCE_CTRL_CROSS;
 		SCE_CTRL_CANCEL = SCE_CTRL_CIRCLE;
 	}

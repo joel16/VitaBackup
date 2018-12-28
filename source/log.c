@@ -8,8 +8,7 @@
 #define LOG_FILENAME   "ux0:data/VitaBackup/log.txt"
 #define LOG_BUFFER_LEN 4096
 
-SceInt Log_Print(const char* format, ...)
-{
+SceInt Log_Print(const char* format, ...) {
 	va_list list;
 	char string[LOG_BUFFER_LEN] = {0};
 
@@ -23,4 +22,6 @@ SceInt Log_Print(const char* format, ...)
 
 	sceIoWrite(fd, string, strlen(string));
 	sceIoClose(fd);
+
+	return 0;
 }

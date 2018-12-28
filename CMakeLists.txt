@@ -16,7 +16,7 @@ set(VITA_APP_NAME "Vita Backup")
 set(VITA_TITLEID  "VITABUP00")
 set(VITA_VERSION  "01.10")
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Werror -O2 -mword-relocations -fomit-frame-pointer -ffunction-sections")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall -O3 -mword-relocations -fomit-frame-pointer -ffunction-sections")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -fno-exceptions -std=gnu++11")
 
 FUNCTION(ADD_RESOURCES out_var)
@@ -39,7 +39,6 @@ ENDFUNCTION()
 
 file(GLOB res_files RELATIVE
   ${CMAKE_SOURCE_DIR}
-  res/Light/*.png
   res/Phalaris/*.png
 )
 add_resources(vitaident_res ${res_files})
@@ -47,7 +46,6 @@ add_resources(vitaident_res ${res_files})
 include_directories(
 	include
 	include/menus
-	include/microtar
 )
 
 add_executable(${SHORT_NAME}
@@ -60,9 +58,9 @@ add_executable(${SHORT_NAME}
 	source/menus/menu_main.c
 	source/menus/menu_options.c
 	source/menus/menu_restore.c
-	source/microtar/microtar.c
-	source/microtar/microtar_read.c
-	source/microtar/microtar_write.c
+	source/microtar.c
+	source/microtar_read.c
+	source/microtar_write.c
 	source/progress_bar.c
 	source/textures.c
 	source/touch.c

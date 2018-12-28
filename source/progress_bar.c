@@ -2,12 +2,11 @@
 #include "textures.h"
 #include "utils.h"
 
-SceVoid ProgressBar_DisplayProgress(char *msg, char *src, SceULong64 offset, SceULong64 size)
-{
+SceVoid ProgressBar_DisplayProgress(char *msg, char *src, SceULong64 offset, SceULong64 size) {
 	vita2d_start_drawing();
 	vita2d_clear_screen();
 	
-	vita2d_draw_texture(background[theme], 0, 0);
+	vita2d_draw_texture(background, 0, 0);
 
 	int title_width = vita2d_pvf_text_width(font, 1.5f, msg);
 	vita2d_pvf_draw_text(font, (960 - title_width) / 2, 50, COLOUR_TEXT, 1.5f, msg);

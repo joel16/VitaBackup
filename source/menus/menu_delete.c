@@ -8,8 +8,7 @@
 #include "touch.h"
 #include "utils.h"
 
-SceInt Menu_Delete(char *path)
-{
+SceInt Menu_Delete(char *path) {
 	SceInt selection = 0;
 
 	SceInt title_width = vita2d_pvf_text_width(font, 1.5f, "Delete backup");
@@ -19,22 +18,21 @@ SceInt Menu_Delete(char *path)
 	
 	SceInt dialog_width = vita2d_pvf_text_width(font, 1.5f, dialog);
 
-	while (1)
-	{
+	while (SCE_TRUE) {
 		vita2d_start_drawing();
 		vita2d_clear_screen();
 
-		vita2d_draw_texture(background[theme], 0, 0);
+		vita2d_draw_texture(background, 0, 0);
 
 		vita2d_pvf_draw_text(font, (960 - title_width) / 2, 50, COLOUR_TEXT, 1.5f, "Delete backup");
 		vita2d_pvf_draw_text(font, (960 - dialog_width) / 2, 220, COLOUR_TEXT, 1.5f, dialog);
 
 		if (selection == 0)
-			vita2d_draw_rectangle(240, 400, vita2d_pvf_text_width(font, 1.5f, "YES") + 20, 
-				vita2d_pvf_text_height(font, 1.5f, "YES") + 20, COLOUR_TEXT);
+			vita2d_draw_rectangle(240, 390, vita2d_pvf_text_width(font, 1.5f, "YES") + 20, 
+				vita2d_pvf_text_height(font, 1.5f, "YES") + 30, COLOUR_TEXT);
 		else
-			vita2d_draw_rectangle((710 - vita2d_pvf_text_width(font, 1.5f, "NO")) - 20, 400, 
-			vita2d_pvf_text_width(font, 1.5f, "NO") + 20, vita2d_pvf_text_height(font, 1.5f, "NO") + 20, COLOUR_TEXT);
+			vita2d_draw_rectangle((710 - vita2d_pvf_text_width(font, 1.5f, "NO")) - 10, 390, 
+			vita2d_pvf_text_width(font, 1.5f, "NO") + 20, vita2d_pvf_text_height(font, 1.5f, "NO") + 30, COLOUR_TEXT);
 
 		vita2d_pvf_draw_text(font, 250, 420, selection == 0? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, "YES");
 		vita2d_pvf_draw_text(font, 710 - vita2d_pvf_text_width(font, 1.5f, "NO"), 420, selection == 1? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 
@@ -45,15 +43,13 @@ SceInt Menu_Delete(char *path)
 		Utils_HandleControls();
 		Touch_Update();
 
-		if (pressed & SCE_CTRL_RIGHT)
-		{
+		if (pressed & SCE_CTRL_RIGHT) {
 			if (selection < 1)
 				selection++;
 			else 
 				selection = 0;
 		}
-		else if (pressed & SCE_CTRL_LEFT)
-		{
+		else if (pressed & SCE_CTRL_LEFT) {
 			if (selection > 0)
 				selection--;
 			else 

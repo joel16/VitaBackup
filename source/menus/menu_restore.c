@@ -16,8 +16,7 @@
 
 #define wd ":/data/VitaBackup/backups/"
 
-typedef struct File
-{
+typedef struct File {
 	struct File *next; // Next file
 	SceBool isDir; // Folder flag
 	char name[256]; // File name
@@ -29,8 +28,7 @@ File *files = NULL;
 char cwd[128];
 
 // Free Heap Memory
-static SceVoid Restore_RecursiveFree(File * node)
-{
+static SceVoid Restore_RecursiveFree(File *node) {
 	if (node == NULL) 
 		return;
 
@@ -38,8 +36,7 @@ static SceVoid Restore_RecursiveFree(File * node)
 	free(node);
 }
 
-static SceInt Restore_PopulateBackups(SceBool refresh)
-{
+static SceInt Restore_PopulateBackups(SceBool refresh) {
 	SceInt dir = 0;
 
 	Restore_RecursiveFree(files);
@@ -48,19 +45,14 @@ static SceInt Restore_PopulateBackups(SceBool refresh)
 
 	snprintf(cwd, 50, "%s%s", storage_location == SCE_FALSE? "ux0" : "ur0", wd);
 
-	if (R_SUCCEEDED(dir = sceIoDopen(cwd)))
-	{
+	if (R_SUCCEEDED(dir = sceIoDopen(cwd))) {
 		SceInt ret = 1;
 
-		// Iterate Files
-		while (ret > 0)
-		{
-			// File entry
+		while (ret > 0) {
 			SceIoDirent entry;
 			memset(&entry, 0, sizeof(entry));
 
-			if (R_SUCCEEDED(ret = sceIoDread(dir, &entry)))
-			{
+			if (R_SUCCEEDED(ret = sceIoDread(dir, &entry))) {
 				// Ingore null filename
 				if (entry.d_name[0] == '\0') 
 					continue;
@@ -83,7 +75,7 @@ static SceInt Restore_PopulateBackups(SceBool refresh)
 				item->isDir = SCE_S_ISDIR(entry.d_stat.st_mode);
 
 				// Ignore anything that is not a tar file
-				char * ext = strrchr(item->name, '.');
+				char *ext = strrchr(item->name, '.');
 				if (strcmp(ext, ".tar") != 0)
 					continue;
 
@@ -92,9 +84,8 @@ static SceInt Restore_PopulateBackups(SceBool refresh)
 					files = item;
 
 				// Existing List
-				else
-				{
-					File * list = files;
+				else {
+					File *list = files;
 					
 					while(list->next != NULL) 
 						list = list->next;
@@ -114,19 +105,19 @@ static SceInt Restore_PopulateBackups(SceBool refresh)
 	else
 		return dir;
 
-	if (!refresh)	
-	{
+	if (!refresh) {
 		if (selection >= fileCount) 
 			selection = fileCount - 1; // Keep index
 	}
 	else 
 		selection = 0; // Refresh selection
+
+	return 0;
 }
 
 static SceBool enable[MAX_MENU_ITEMS + 1];
 
-static SceInt Restore_DisplayFiles(SceVoid)
-{
+static SceVoid Restore_DisplayFiles(SceVoid) {
 	double scroll_length = (372.0 / ((double)fileCount - 1.0));
 	SceInt title_width = vita2d_pvf_text_width(font, 1.5f, "Select restore data");
 	SceInt instr_width = vita2d_pvf_text_width(font, 1.5f, "Press Start to begin restore process");
@@ -134,8 +125,8 @@ static SceInt Restore_DisplayFiles(SceVoid)
 	vita2d_start_drawing();
 	vita2d_clear_screen();
 	
-	vita2d_draw_texture(background[theme], 0, 0);
-	vita2d_draw_texture(scroll_bg[theme], 922, 56);
+	vita2d_draw_texture(background, 0, 0);
+	vita2d_draw_texture(scroll_bg, 922, 56);
 
 	vita2d_pvf_draw_text(font, (960 - title_width) / 2, 50, COLOUR_TEXT, 1.5f, "Select restore data");
 	vita2d_pvf_draw_text(font, (960 - instr_width) / 2, 524, COLOUR_TEXT, 1.5f, "Press Start to begin restore process");
@@ -146,26 +137,24 @@ static SceInt Restore_DisplayFiles(SceVoid)
 	// Draw File List
 	File *file = files;
 	
-	for (; file != NULL; file = file->next)
-	{
+	for (; file != NULL; file = file->next) {
 		// Limit the files per page
 		if (printed == LIST_PER_PAGE) 
 			break;
 
 		if (fileCount > 5) // Draw scroll only if there are more than 5 objects on the screen
-			vita2d_draw_texture(scroll_pointer[theme], 922, 56 + (scroll_length * selection)); // can't go more than y = 428 or it will be out of bounds
+			vita2d_draw_texture(scroll_pointer, 922, 56 + (scroll_length * selection)); // can't go more than y = 428 or it will be out of bounds
 
-		if (selection < LIST_PER_PAGE || i > (selection - LIST_PER_PAGE))
-		{
+		if (selection < LIST_PER_PAGE || i > (selection - LIST_PER_PAGE)) {
 			if (i == selection)
-				vita2d_draw_texture(enable[i] == SCE_TRUE? checkbox_full_selected[theme] : checkbox_empty_selected[theme], 50, (110 + (DISTANCE_Y * printed)) - 10);
+				vita2d_draw_texture(enable[i] == SCE_TRUE? checkbox_full_selected : checkbox_empty_selected, 50, (110 + (DISTANCE_Y * printed)) - 10);
 			else
-				vita2d_draw_texture(enable[i] == SCE_TRUE? checkbox_full[theme] : checkbox_empty[theme], 50, (110 + (DISTANCE_Y * printed)) - 10);
+				vita2d_draw_texture(enable[i] == SCE_TRUE? checkbox_full : checkbox_empty, 50, (110 + (DISTANCE_Y * printed)) - 10);
 
-			char * ext = strrchr(file->name, '.');
+			char *ext = strrchr(file->name, '.');
 
 			if (strncasecmp(ext ,".tar", 4) == 0)
-				vita2d_draw_texture(i == selection? ico_container_zip_selected[theme] : ico_container_zip[theme], 115, 86 + (DISTANCE_Y * printed));
+				vita2d_draw_texture(i == selection? ico_container_zip_selected : ico_container_zip, 115, 86 + (DISTANCE_Y *printed));
 			
 			char buf[64], path[500], size[16];;
 
@@ -185,8 +174,7 @@ static SceInt Restore_DisplayFiles(SceVoid)
 			Utils_GetDateString(dateStr, 0, FS_GetFileModifiedTime(path), SCE_TRUE); // Get modified date
 			Utils_GetTimeString(timeStr, 0, FS_GetFileModifiedTime(path)); // Get modified time
 			
-			if (!(file->isDir))
-			{
+			if (!(file->isDir)) {
 				Utils_GetSizeString(size, FS_GetFileSize(path)); // Get size for files only
 				vita2d_pvf_draw_textf(font, 200, (110 + (DISTANCE_Y * printed)) + 35, i == selection? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, "%s %s - %s", dateStr, timeStr, size);
 			}
@@ -200,8 +188,7 @@ static SceInt Restore_DisplayFiles(SceVoid)
 	vita2d_end_frame();
 }
 
-static File *Restore_FindIndex(SceInt index)
-{
+static File *Restore_FindIndex(SceInt index) {
 	SceInt i = 0;
 	File *file = files; 
 	
@@ -211,21 +198,17 @@ static File *Restore_FindIndex(SceInt index)
 	return file;
 }
 
-SceInt Menu_Restore(SceVoid)
-{
+SceInt Menu_Restore(SceVoid) {
 	memset(enable, 0, sizeof(enable)); // Reset all enabled data
 
 	Restore_PopulateBackups(SCE_TRUE);
 	Restore_DisplayFiles();
 
-	while (1)
-	{
+	while (SCE_TRUE) {
 		Utils_HandleControls();
 
-		if (fileCount > 0)
-		{
-			if (pressed & SCE_CTRL_UP)
-			{
+		if (fileCount > 0) {
+			if (pressed & SCE_CTRL_UP) {
 				if (selection > 0) 
 					selection--;
 				else 
@@ -233,8 +216,7 @@ SceInt Menu_Restore(SceVoid)
 
 				Restore_DisplayFiles();
 			}
-			else if (pressed & SCE_CTRL_DOWN)
-			{
+			else if (pressed & SCE_CTRL_DOWN) {
 				if (selection < (fileCount - 1)) 
 					selection++;
 				else 
@@ -244,8 +226,7 @@ SceInt Menu_Restore(SceVoid)
 			}
 		}
 
-		if (pressed & SCE_CTRL_ENTER)
-		{
+		if (pressed & SCE_CTRL_ENTER) {
 			if (!enable[selection])
 				enable[selection] = SCE_TRUE;
 			else
@@ -254,12 +235,9 @@ SceInt Menu_Restore(SceVoid)
 			Restore_DisplayFiles();
 		}
 
-		if (pressed & SCE_CTRL_START)
-		{
-			for (SceInt i = 0; i < fileCount; i++)
-			{
-				if (enable[i] == SCE_TRUE)
-				{
+		if (pressed & SCE_CTRL_START) {
+			for (SceInt i = 0; i < fileCount; i++) {
+				if (enable[i] == SCE_TRUE) {
 					File *file = Restore_FindIndex(i);
 			
 					char path[256], filename[256];
@@ -276,12 +254,9 @@ SceInt Menu_Restore(SceVoid)
 			Restore_DisplayFiles();
 		}
 
-		if (pressed & SCE_CTRL_SQUARE)
-		{
-			for (SceInt i = 0; i < fileCount; i++)
-			{
-				if (enable[i] == SCE_TRUE)
-				{
+		if (pressed & SCE_CTRL_SQUARE) {
+			for (SceInt i = 0; i < fileCount; i++) {
+				if (enable[i] == SCE_TRUE) {
 					File *file = Restore_FindIndex(i);
 			
 					char path[256], filename[256];

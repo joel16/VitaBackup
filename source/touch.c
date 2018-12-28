@@ -12,8 +12,7 @@
 
 #define lerp(value, from_max, to_max) ((((value * 10) * (to_max * 10)) / (from_max * 10)) / 10)
 
-typedef struct 
-{
+typedef struct {
 	SceInt posX;
 	SceInt posY;
 	SceInt held;
@@ -25,8 +24,7 @@ typedef struct
 
 touchStateData* touchState;
 
-SceVoid Touch_Reset(SceVoid) 
-{
+SceVoid Touch_Reset(SceVoid) {
 	touchState->posX = 0;
 	touchState->posY = 0;
 	touchState->held = 0;
@@ -36,8 +34,7 @@ SceVoid Touch_Reset(SceVoid)
 	touchState->releasedPrev = 0;
 }
 
-SceInt touchInit(SceVoid) 
-{
+SceInt touchInit(SceVoid) {
 	sceTouchSetSamplingState(SCE_TOUCH_PORT_FRONT, 1);
 	
 	touchState = malloc(sizeof(touchStateData));
@@ -46,57 +43,47 @@ SceInt touchInit(SceVoid)
 	return 1;
 }
 
-SceInt Touch_GetX(SceVoid) 
-{
+SceInt Touch_GetX(SceVoid) {
 	return touchState->posX;
 }
 
-SceInt Touch_GetY(SceVoid) 
-{
+SceInt Touch_GetY(SceVoid) {
 	return touchState->posY;
 }
 
-SceInt Touch_CheckPressed(SceVoid) 
-{
+SceInt Touch_CheckPressed(SceVoid) {
 	return touchState->pressed;
 }
 
-SceInt Touch_CheckReleased(SceVoid) 
-{
+SceInt Touch_CheckReleased(SceVoid) {
 	return touchState->released;
 }
 
-SceInt Touch_CheckHeld(SceVoid) 
-{
+SceInt Touch_CheckHeld(SceVoid) {
 	return touchState->held;
 }
 	
-SceVoid Touch_Update(SceVoid) 
-{
+SceVoid Touch_Update(SceVoid) {
 	sceTouchPeek(SCE_TOUCH_PORT_FRONT, &touch, 1);
 	
-	if (touch.reportNum > 0) 
-	{
+	if (touch.reportNum > 0) {
 		touchState->held = 1;
 		touchState->posX = (lerp(touch.report[0].x, 1919, 960));
 		touchState->posY = (lerp(touch.report[0].y, 1087, 544));
 		touchState->released = 0;
 		touchState->releasedPrev = 0;
-		if (touchState->pressedPrev == 0) 
-		{
+		if (touchState->pressedPrev == 0) {
 			touchState->pressedPrev = 1;
 			touchState->pressed = 1;
 		}
 		else 
 			touchState->pressed = 0;
 	}
-	else 
-	{
+	else {
 		touchState->held = 0;
 		touchState->pressed = 0;
 		touchState->pressedPrev = 0;
-		if (touchState->releasedPrev == 0) 
-		{
+		if (touchState->releasedPrev == 0) {
 			touchState->releasedPrev = 1;
 			touchState->released = 1;
 		}

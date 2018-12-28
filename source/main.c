@@ -5,8 +5,7 @@
 #include "touch.h"
 #include "utils.h"
 
-static SceVoid Init_Services(SceVoid)
-{
+static SceVoid Init_Services(SceVoid) {
 	vita2d_init();
 	vita2d_set_clear_color(RGBA8(0, 0, 0, 255));
 	Textures_Load();
@@ -27,18 +26,16 @@ static SceVoid Init_Services(SceVoid)
 	Utils_GetEnterButton();
 }
 
-static SceVoid Term_Services(SceVoid)
-{
+static SceVoid Term_Services(SceVoid) {
 	Utils_TermAppUtil();
 	Textures_Free();
 	vita2d_fini();
 }
 
-int main(int argc, char *argv[]) 
-{
+int main(int argc, char *argv[]) {
 	Init_Services();
 
-	while(1)
+	while(SCE_TRUE)
 		Menu_Main();
 
 	Term_Services();
