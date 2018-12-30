@@ -16,7 +16,7 @@ SceInt Menu_SelectCompression(SceVoid) {
 	char *dialog_2 = (char *)malloc(256);
 
 	snprintf(dialog_1, 256, "Higher compression means lower speed but smaller file. Lower");
-	snprintf(dialog_2, 256, "compression means higher speed but larger file. Recommended value is 1.");
+	snprintf(dialog_2, 256, "compression means higher speed but larger file. Recommended value is 0.");
 	
 	SceInt dialog1_width = vita2d_pvf_text_width(font, 1.5f, dialog_1);
 	SceInt dialog2_width = vita2d_pvf_text_width(font, 1.5f, dialog_2);
