@@ -3,6 +3,6 @@
 
 #include <vitasdk.h>
 
-SceVoid MicrotarRead_ExtractTar(char *src, char *dst);
+SceInt MicrotarRead_ExtractTar(char *src, char *dst);
 
 #endif

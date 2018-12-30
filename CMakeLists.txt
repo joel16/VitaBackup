@@ -54,6 +54,7 @@ add_executable(${SHORT_NAME}
 	source/log.c
 	source/main.c
 	source/menus/menu_backup.c
+	source/menus/menu_compression.c
 	source/menus/menu_delete.c
 	source/menus/menu_main.c
 	source/menus/menu_options.c
@@ -61,6 +62,7 @@ add_executable(${SHORT_NAME}
 	source/microtar.c
 	source/microtar_read.c
 	source/microtar_write.c
+	source/miniz.c
 	source/progress_bar.c
 	source/textures.c
 	source/touch.c

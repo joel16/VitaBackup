@@ -3,6 +3,7 @@
 #include "menu_options.h"
 #include "microtar.h"
 #include "microtar_write.h"
+#include "miniz.h"
 #include "progress_bar.h"
 #include "utils.h"
 
@@ -105,14 +106,19 @@ static SceInt MicrotarWrite_AddFileToTarRec(char *src) {
 	return 0;
 }
 
-SceInt MicrotarWrite_AddToTar(char *src) {
+SceInt MicrotarWrite_AddToTar(char *src, SceInt compression) {
 	SceDateTime time;
 	sceRtcGetCurrentClockLocalTime(&time);
 
-	char *path = (char *)malloc(128);
-	char *dateStr = (char *)malloc(24);
+	char *path = malloc(256);
+	char *compressed_path = malloc(256);
+	char *dateStr = malloc(24);
+	char *basename = malloc(128);
+
+	snprintf(basename, 128, "%s.tar", Utils_Basename(src));
+
 	Utils_GetDateString(dateStr, 0, time, SCE_FALSE);
-	snprintf(path, 128, "%s:/data/VitaBackup/backups/%s-%s.tar", storage_location == SCE_FALSE? "ux0" : "ur0", 
+	snprintf(path, 256, "%s:/data/VitaBackup/backups/%s-%s.tar", storage_location == SCE_FALSE? "ux0" : "ur0", 
 		Utils_RemoveExt(Utils_Basename(src)), dateStr);
 
 	if (FS_FileExists(path))
@@ -126,7 +132,9 @@ SceInt MicrotarWrite_AddToTar(char *src) {
 
 	if (R_FAILED(ret = sceIoGetstat(src, &stat))) {
 		free(path);
+		free(compressed_path);
 		free(dateStr);
+		free(basename);
 		return ret;
 	}
 
@@ -135,9 +143,68 @@ SceInt MicrotarWrite_AddToTar(char *src) {
 	else 
 		MicrotarWrite_AddFileToTar(src);
 
-	free(path);
-	free(dateStr);
 	mtar_finalize(&tar); // Finalize archive
 	mtar_close(&tar); // Close archive
+
+	mz_zip_archive zip_archive = {0};
+    mz_bool status = MZ_FALSE;
+	memset(&zip_archive, 0, sizeof(zip_archive));
+
+	snprintf(compressed_path, 256, "%s:/data/VitaBackup/backups/%s-%s.tar.zip", storage_location == SCE_FALSE? "ux0" : "ur0", 
+		Utils_RemoveExt(Utils_Basename(src)), dateStr);
+
+	status = mz_zip_writer_init_file(&zip_archive, compressed_path, 0);
+	if (!status) {
+		DEBUG_PRINT("mz_zip_writer_init fail");
+		free(path);
+		free(compressed_path);
+		free(dateStr);
+		free(basename);
+		return -1;
+	}
+
+	status = mz_zip_writer_add_file(&zip_archive, basename, path, NULL, 0, (mz_uint)compression);
+	if (!status) {
+		DEBUG_PRINT("mz_zip_writer_add_file(basename:%s path:%s) fail", basename, path);
+		free(path);
+		free(compressed_path);
+		free(dateStr);
+		free(basename);
+		return -1;
+	}
+
+	status = mz_zip_writer_finalize_archive(&zip_archive);
+	if (!status) {
+		DEBUG_PRINT("mz_zip_writer_finalize_archive fail");
+		free(path);
+		free(compressed_path);
+		free(dateStr);
+		free(basename);
+		return -1;
+	}
+
+	status = mz_zip_writer_end(&zip_archive);
+	if (!status) {
+		DEBUG_PRINT("mz_zip_writer_end fail");
+		free(path);
+		free(compressed_path);
+		free(dateStr);
+		free(basename);
+		return -1;
+	}
+
+	if (R_FAILED(ret = FS_RemoveFile(path))) {
+		DEBUG_PRINT("FS_RemoveFile %s failed 0x%lx\n", path, ret);
+		free(path);
+		free(compressed_path);
+		free(dateStr);
+		free(basename);
+		return -1;
+	}
+
+	free(path);
+	free(compressed_path);
+	free(dateStr);
+	free(basename);
 	return 0;
 }

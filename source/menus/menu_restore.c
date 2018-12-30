@@ -76,7 +76,7 @@ static SceInt Restore_PopulateBackups(SceBool refresh) {
 
 				// Ignore anything that is not a tar file
 				char *ext = strrchr(item->name, '.');
-				if (strcmp(ext, ".tar") != 0)
+				if (strcmp(ext, ".zip") != 0)
 					continue;
 
 				// New List
@@ -270,6 +270,7 @@ SceInt Menu_Restore(SceVoid) {
 					Utils_UnlockPower();
 				}
 			}
+			Restore_DisplayFiles();
 		}
 
 		if (pressed & SCE_CTRL_CANCEL)

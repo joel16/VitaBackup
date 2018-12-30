@@ -3,6 +3,6 @@
 
 #include <vitasdk.h>
 
-SceInt MicrotarWrite_AddToTar(char *src);
+SceInt MicrotarWrite_AddToTar(char *src, SceInt compression);
 
 #endif

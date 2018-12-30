@@ -20,6 +20,7 @@ vita2d_texture *checkbox_full, *checkbox_empty;
 vita2d_texture *checkbox_full_selected, *checkbox_empty_selected;
 vita2d_texture *scroll_bg, *scroll_pointer;
 vita2d_texture *ico_container_zip, *ico_container_zip_selected;
+vita2d_texture *compression_pointer;
 
 vita2d_pvf *font;
 

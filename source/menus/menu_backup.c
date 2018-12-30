@@ -5,7 +5,7 @@
 #include "fs.h"
 #include "log.h"
 #include "menu_backup.h"
-#include "menu_options.h"
+#include "menu_compression.h"
 #include "microtar_write.h"
 #include "textures.h"
 #include "touch.h"
@@ -68,6 +68,8 @@ SceInt Menu_Backup(SceVoid) {
 
 	double scroll_length = (372.0 / ((double)count - 1.0));
 
+	SceInt compression = -1;
+
 	while (SCE_TRUE) {
 		Utils_HandleControls();
 
@@ -128,15 +130,20 @@ SceInt Menu_Backup(SceVoid) {
 		if (pressed & SCE_CTRL_CANCEL)
 			break;
 
-		// Tests so far
 		if (pressed & SCE_CTRL_START) {
-			for (SceInt i = 0; i < count + 1; i++) {
-				if (enable[i] == SCE_TRUE) {
-					Utils_LockPower();
-					MicrotarWrite_AddToTar(items_path[i]);
-					Utils_UnlockPower();
-				}		
+			if (compression < 0)
+				compression = Menu_SelectCompression();
+			if (compression >= 0) {
+				for (SceInt i = 0; i < count + 1; i++) {
+					if (enable[i] == SCE_TRUE) {
+						Utils_LockPower();
+						MicrotarWrite_AddToTar(items_path[i], compression);
+						Utils_UnlockPower();
+					}		
+				}
 			}
+
+			compression = -1;
 		}
 	}
 

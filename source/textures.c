@@ -21,6 +21,8 @@ extern SceUChar8 _binary_res_Phalaris_scroll_pointer_png_start;
 extern SceUChar8 _binary_res_Phalaris_ico_container_zip_png_start;
 extern SceUChar8 _binary_res_Phalaris_ico_container_zip_selected_png_start;
 
+extern SceUChar8 _binary_res_Phalaris_compression_pointer_png_start;
+
 static vita2d_texture *Texture_LoadPNG(const SceVoid *buffer) {
 	vita2d_texture *texture = vita2d_load_PNG_buffer(buffer);
 	vita2d_texture_set_filters(texture, SCE_GXM_TEXTURE_FILTER_LINEAR, SCE_GXM_TEXTURE_FILTER_LINEAR);
@@ -50,11 +52,15 @@ SceVoid Textures_Load(SceVoid) {
 	ico_container_zip = Texture_LoadPNG(&_binary_res_Phalaris_ico_container_zip_png_start);
 	ico_container_zip_selected = Texture_LoadPNG(&_binary_res_Phalaris_ico_container_zip_selected_png_start);
 
+	compression_pointer = Texture_LoadPNG(&_binary_res_Phalaris_compression_pointer_png_start);
+
 	font = vita2d_load_default_pvf();
 }
 
 SceVoid Textures_Free(SceVoid) {
 	vita2d_free_pvf(font);
+
+	vita2d_free_texture(compression_pointer);
 
 	vita2d_free_texture(ico_container_zip_selected);
 	vita2d_free_texture(ico_container_zip);
