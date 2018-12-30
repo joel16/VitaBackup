@@ -33,19 +33,22 @@ SceInt Menu_Backup(SceVoid) {
 		file = sceIoOpen("ur0:/data/VitaBackup/path.txt", SCE_O_WRONLY | SCE_O_CREAT | SCE_O_TRUNC, 0777); // Create default path file:
 		char *buf = (char *)malloc(1024);
 		
-		SceInt len = snprintf(buf, 1024, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s", 
+		SceInt len = snprintf(buf, 1024, "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s", 
+			"Icon layout~ux0:/iconlayout.ini",
+			"Registry~vd0:/registry/system.dreg",
+			"Registry~vd0:/registry/system.ireg",
+			"User IDs~ux0:/id.dat",
+			"User profile~ur0:/user/00/np/myprofile.dat",
+			"Cloud data~tm0:/clouddata/mcid.dat",
+			"Activation~tm0:/npdrm/act.dat",
+			"Licenses~ux0:/license",
+			"Database~ur0:/shell/db/app.db",
 			"Encrypted savedata~ux0:/user/00/savedata",
 			"Encrypted savedata_backup~ux0:/user/00/savedata_backup",
 			"Encrypted savedata_plus~ux0:/user/00/savedata_plus",
-			"Decrypted savedata~ux0:/data/savegames",
-			"PSP savedata~ux0:/PSPEMU/PSP/SAVEDATA/",
+			"Decrypted savegames~ux0:/data/savegames",
 			"Trophies~ux0:/user/00/trophy",
-			"Trophies~ur0:/user/00/trophy",
-			"System Settings and User Information~vd0:/registry",
-			"User and Hardware IDs~ux0:/id.dat",
-			"Licenses~ux0:/license",
-			"Database~ur0:/shell/db/app.db",
-			"Activation~tm0:/npdrm/act.dat");
+			"Trophies~ur0:/user/00/trophy");
 		
 		sceIoWrite(file, buf, len);
 		
