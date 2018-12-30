@@ -17,8 +17,8 @@
 SceInt Menu_Backup(SceVoid) {
 	SceInt selection = 0;
 
-	SceInt title_width = vita2d_pvf_text_width(font, 1.5f, "Select backup data");
-	SceInt instr_width = vita2d_pvf_text_width(font, 1.5f, "Press Start to begin backup process");
+	SceInt title_width = vita2d_pvf_text_width(font, 1.5f, "Select backup data:");
+	SceInt instr_width = vita2d_pvf_text_width(font, 1.5f, "Press START to begin backup process.");
 
 	char line[256];
 	char items[256][51];
@@ -87,8 +87,8 @@ SceInt Menu_Backup(SceVoid) {
 
 		vita2d_draw_texture(scroll_bg, 922, 56);
 
-		vita2d_pvf_draw_text(font, (960 - title_width) / 2, 50, COLOUR_TEXT, 1.5f, "Select backup data");
-		vita2d_pvf_draw_text(font, (960 - instr_width) / 2, 524, COLOUR_TEXT, 1.5f, "Press Start to begin backup process");
+		vita2d_pvf_draw_text(font, (960 - title_width) / 2, 50, COLOUR_TEXT, 1.5f, "Select backup data:");
+		vita2d_pvf_draw_text(font, (960 - instr_width) / 2, 524, COLOUR_TEXT, 1.5f, "Press START to begin backup process.");
 
 		SceInt printed = 0; // Print counter
 

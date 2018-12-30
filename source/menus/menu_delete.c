@@ -2,14 +2,13 @@
 #include <stdlib.h>
 
 #include "fs.h"
-#include "menu_delete.h"
-#include "menu_options.h"
+#include "log.h"
 #include "textures.h"
 #include "touch.h"
 #include "utils.h"
 
 SceInt Menu_Delete(char *path) {
-	SceInt selection = 0;
+	SceInt selection = 0, ret = 0;
 
 	SceInt title_width = vita2d_pvf_text_width(font, 1.5f, "Delete backup");
 	char *dialog = (char *)malloc(256);
@@ -56,7 +55,19 @@ SceInt Menu_Delete(char *path) {
 				selection = 1;
 		}
 
-		if (pressed & SCE_CTRL_CANCEL)
+		if (pressed & SCE_CTRL_ENTER) {
+			if (selection == 0) {
+				if (R_FAILED(ret = FS_RemoveFile(path))) {
+					DEBUG_PRINT("FS_RemoveFile %s failed 0x%lx\n", path, ret);
+					free(dialog);
+					return -1;
+				}
+				break;
+			}
+			else if (selection == 1)
+				break;
+		}
+		else if (pressed & SCE_CTRL_CANCEL)
 			break;
 	}
 

@@ -11,12 +11,12 @@
 SceInt Menu_SelectCompression(SceVoid) {
 	SceInt selection = 0;
 
-	SceInt title_width = vita2d_pvf_text_width(font, 1.5f, "Choose compression level");
+	SceInt title_width = vita2d_pvf_text_width(font, 1.5f, "Choose compression level:");
 	char *dialog_1 = (char *)malloc(256);
 	char *dialog_2 = (char *)malloc(256);
 
 	snprintf(dialog_1, 256, "Higher compression means lower speed but smaller file. Lower");
-	snprintf(dialog_2, 256, "compression means higher speed but larger file. Recommended value is 0.");
+	snprintf(dialog_2, 256, "compression means higher speed but larger file. Recommended value is 1.");
 	
 	SceInt dialog1_width = vita2d_pvf_text_width(font, 1.5f, dialog_1);
 	SceInt dialog2_width = vita2d_pvf_text_width(font, 1.5f, dialog_2);
@@ -27,7 +27,7 @@ SceInt Menu_SelectCompression(SceVoid) {
 
 		vita2d_draw_texture(background, 0, 0);
 
-		vita2d_pvf_draw_text(font, (960 - title_width) / 2, 50, COLOUR_TEXT, 1.5f, "Choose compression level");
+		vita2d_pvf_draw_text(font, (960 - title_width) / 2, 50, COLOUR_TEXT, 1.5f, "Choose compression level:");
 		vita2d_pvf_draw_text(font, (960 - dialog1_width) / 2, 220, COLOUR_TEXT, 1.5f, dialog_1);
 		vita2d_pvf_draw_text(font, (960 - dialog2_width) / 2, 260, COLOUR_TEXT, 1.5f, dialog_2);
 

@@ -119,8 +119,10 @@ static SceBool enable[MAX_MENU_ITEMS + 1];
 
 static SceVoid Restore_DisplayFiles(SceVoid) {
 	double scroll_length = (372.0 / ((double)fileCount - 1.0));
-	SceInt title_width = vita2d_pvf_text_width(font, 1.5f, "Select restore data");
-	SceInt instr_width = vita2d_pvf_text_width(font, 1.5f, "Press Start to begin restore process");
+	SceInt title_width = vita2d_pvf_text_width(font, 1.5f, "Select restore data:");
+	SceInt instr_width = vita2d_pvf_text_width(font, 1.5f, "Press START to begin restore process, or SQUARE to delete.");
+	SceInt nodata_width = vita2d_pvf_text_width(font, 1.5f, "No backup data found.");
+	SceInt nodata_height = vita2d_pvf_text_height(font, 1.5f, "No backup data found.");
 
 	vita2d_start_drawing();
 	vita2d_clear_screen();
@@ -128,61 +130,65 @@ static SceVoid Restore_DisplayFiles(SceVoid) {
 	vita2d_draw_texture(background, 0, 0);
 	vita2d_draw_texture(scroll_bg, 922, 56);
 
-	vita2d_pvf_draw_text(font, (960 - title_width) / 2, 50, COLOUR_TEXT, 1.5f, "Select restore data");
-	vita2d_pvf_draw_text(font, (960 - instr_width) / 2, 524, COLOUR_TEXT, 1.5f, "Press Start to begin restore process");
+	vita2d_pvf_draw_text(font, (960 - title_width) / 2, 50, COLOUR_TEXT, 1.5f, "Select restore data:");
+	vita2d_pvf_draw_text(font, (960 - instr_width) / 2, 524, COLOUR_TEXT, 1.5f, "Press START to begin restore process, or SQUARE to delete.");
 
 	// File Iterator
 	SceInt i = 0, printed = 0;
 
 	// Draw File List
 	File *file = files;
-	
-	for (; file != NULL; file = file->next) {
-		// Limit the files per page
-		if (printed == LIST_PER_PAGE) 
-			break;
 
-		if (fileCount > 5) // Draw scroll only if there are more than 5 objects on the screen
-			vita2d_draw_texture(scroll_pointer, 922, 56 + (scroll_length * selection)); // can't go more than y = 428 or it will be out of bounds
+	if (fileCount == 0)
+		vita2d_pvf_draw_text(font, (960 - nodata_width) / 2, (544 - nodata_height) / 2, COLOUR_TEXT, 1.5f, "No backup data found.");
+	else {
+		for (; file != NULL; file = file->next) {
+			// Limit the files per page
+			if (printed == LIST_PER_PAGE) 
+				break;
 
-		if (selection < LIST_PER_PAGE || i > (selection - LIST_PER_PAGE)) {
-			if (i == selection)
-				vita2d_draw_texture(enable[i] == SCE_TRUE? checkbox_full_selected : checkbox_empty_selected, 50, (110 + (DISTANCE_Y * printed)) - 10);
-			else
-				vita2d_draw_texture(enable[i] == SCE_TRUE? checkbox_full : checkbox_empty, 50, (110 + (DISTANCE_Y * printed)) - 10);
+			if (fileCount > 5) // Draw scroll only if there are more than 5 objects on the screen
+				vita2d_draw_texture(scroll_pointer, 922, 56 + (scroll_length * selection)); // can't go more than y = 428 or it will be out of bounds
 
-			char *ext = strrchr(file->name, '.');
+			if (selection < LIST_PER_PAGE || i > (selection - LIST_PER_PAGE)) {
+				if (i == selection)
+					vita2d_draw_texture(enable[i] == SCE_TRUE? checkbox_full_selected : checkbox_empty_selected, 50, (110 + (DISTANCE_Y * printed)) - 10);
+				else
+					vita2d_draw_texture(enable[i] == SCE_TRUE? checkbox_full : checkbox_empty, 50, (110 + (DISTANCE_Y * printed)) - 10);
 
-			if (strncasecmp(ext ,".tar", 4) == 0)
-				vita2d_draw_texture(i == selection? ico_container_zip_selected : ico_container_zip, 115, 86 + (DISTANCE_Y *printed));
+				char *ext = strrchr(file->name, '.');
+
+				if (strncasecmp(ext ,".tar", 4) == 0)
+					vita2d_draw_texture(i == selection? ico_container_zip_selected : ico_container_zip, 115, 86 + (DISTANCE_Y *printed));
 			
-			char buf[64], path[500], size[16];;
+				char buf[64], path[500], size[16];;
 
-			strncpy(buf, file->name, sizeof(buf));
-			buf[sizeof(buf) - 1] = '\0';
-			int len = strlen(buf);
-			len = 40 - len;
+				strncpy(buf, file->name, sizeof(buf));
+				buf[sizeof(buf) - 1] = '\0';
+				int len = strlen(buf);
+				len = 40 - len;
+
+				while (len -- > 0)
+					strcat(buf, " ");
+
+				vita2d_pvf_draw_text(font, 200, 110 + (DISTANCE_Y * printed), i == selection? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, buf); // printf file name
+
+				strcpy(path, cwd);
+				strcpy(path + strlen(path), file->name);
+				char dateStr[16], timeStr[24];
+				Utils_GetDateString(dateStr, 0, FS_GetFileModifiedTime(path), SCE_TRUE); // Get modified date
+				Utils_GetTimeString(timeStr, 0, FS_GetFileModifiedTime(path)); // Get modified time
 			
-			while (len -- > 0)
-				strcat(buf, " ");
+				if (!(file->isDir)) {
+					Utils_GetSizeString(size, FS_GetFileSize(path)); // Get size for files only
+					vita2d_pvf_draw_textf(font, 200, (110 + (DISTANCE_Y * printed)) + 35, i == selection? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, "%s %s - %s", dateStr, timeStr, size);
+				}
 
-			vita2d_pvf_draw_text(font, 200, 110 + (DISTANCE_Y * printed), i == selection? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, buf); // printf file name
-
-			strcpy(path, cwd);
-			strcpy(path + strlen(path), file->name);
-			char dateStr[16], timeStr[24];
-			Utils_GetDateString(dateStr, 0, FS_GetFileModifiedTime(path), SCE_TRUE); // Get modified date
-			Utils_GetTimeString(timeStr, 0, FS_GetFileModifiedTime(path)); // Get modified time
-			
-			if (!(file->isDir)) {
-				Utils_GetSizeString(size, FS_GetFileSize(path)); // Get size for files only
-				vita2d_pvf_draw_textf(font, 200, (110 + (DISTANCE_Y * printed)) + 35, i == selection? COLOUR_TEXT_SELECTED : COLOUR_TEXT, 1.5f, "%s %s - %s", dateStr, timeStr, size);
+				printed++; // Increase printed counter
 			}
 
-			printed++; // Increase printed counter
+			i++;
 		}
-
-		i++;
 	}
 
 	vita2d_end_frame();
@@ -251,6 +257,7 @@ SceInt Menu_Restore(SceVoid) {
 					Utils_UnlockPower();
 				}
 			}
+			
 			Restore_DisplayFiles();
 		}
 
@@ -270,6 +277,8 @@ SceInt Menu_Restore(SceVoid) {
 					Utils_UnlockPower();
 				}
 			}
+
+			Restore_PopulateBackups(SCE_TRUE);
 			Restore_DisplayFiles();
 		}
 
