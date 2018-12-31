@@ -158,7 +158,7 @@ static SceVoid Restore_DisplayFiles(SceVoid) {
 
 				char *ext = strrchr(file->name, '.');
 
-				if (strncasecmp(ext ,".tar", 4) == 0)
+				if (strncasecmp(ext ,".zip", 4) == 0)
 					vita2d_draw_texture(i == selection? ico_container_zip_selected : ico_container_zip, 115, 86 + (DISTANCE_Y *printed));
 			
 				char buf[64], path[500], size[16];;
