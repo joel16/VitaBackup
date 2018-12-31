@@ -118,8 +118,7 @@ SceInt MicrotarWrite_AddToTar(char *src, SceInt compression) {
 	snprintf(basename, 128, "%s.tar", Utils_Basename(src));
 
 	Utils_GetDateString(dateStr, 0, time, SCE_FALSE);
-	snprintf(path, 256, "%s:/data/VitaBackup/backups/%s-%s.tar", storage_location == SCE_FALSE? "ux0" : "ur0", 
-		Utils_RemoveExt(Utils_Basename(src)), dateStr);
+	snprintf(path, 256, "%s:/data/VitaBackup/backups/%s.tar", storage_location == SCE_FALSE? "ux0" : "ur0", Utils_Basename(src));
 
 	if (FS_FileExists(path))
 		FS_RemoveFile(path); // Delete output file (if existing)
@@ -150,8 +149,7 @@ SceInt MicrotarWrite_AddToTar(char *src, SceInt compression) {
     mz_bool status = MZ_FALSE;
 	memset(&zip_archive, 0, sizeof(zip_archive));
 
-	snprintf(compressed_path, 256, "%s:/data/VitaBackup/backups/%s-%s.tar.zip", storage_location == SCE_FALSE? "ux0" : "ur0", 
-		Utils_RemoveExt(Utils_Basename(src)), dateStr);
+	snprintf(compressed_path, 256, "%s:/data/VitaBackup/backups/%s-%s.tar.zip", storage_location == SCE_FALSE? "ux0" : "ur0", Utils_Basename(src), dateStr);
 
 	status = mz_zip_writer_init_file(&zip_archive, compressed_path, 0);
 	if (!status) {

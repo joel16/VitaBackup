@@ -16,7 +16,7 @@ static SceInt MicrotarRead_ExtractFileFromTarRec(char *dst, SceOff size) {
 	// Read Success
 	while ((mtar_read_header(&tar, &header)) != MTAR_ENULLRECORD) {
 		if (header.type == MTAR_TDIR) {
-			DEBUG_PRINT("Dir name: %s\npos: %llu\nremaining_data: %llu\n\n", header.name, tar.pos, tar.remaining_data);
+			//DEBUG_PRINT("Dir name: %s\npos: %llu\nremaining_data: %llu\n\n", header.name, tar.pos, tar.remaining_data);
 			FS_RecursiveMakeDir(header.name);
 		}
 		else {
@@ -26,7 +26,7 @@ static SceInt MicrotarRead_ExtractFileFromTarRec(char *dst, SceOff size) {
 				return ret;
 			}
 
-			DEBUG_PRINT("File name: %s\nFile size: %d\npos: %llu\nremaining_data: %llu\n\n", header.name, header.size, tar.pos, tar.remaining_data);
+			//DEBUG_PRINT("File name: %s\nFile size: %d\npos: %llu\nremaining_data: %llu\n\n", header.name, header.size, tar.pos, tar.remaining_data);
 			ProgressBar_DisplayProgress("Restore in progress...", Utils_Basename(header.name), tar.pos, size);
 			FS_WriteFile(header.name, data, header.size + 1);
 			free(data);
