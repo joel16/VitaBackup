@@ -204,6 +204,31 @@ static File *Restore_FindIndex(SceInt index) {
 	return file;
 }
 
+static SceInt Menu_DisplayUncompressingMessage(char *path) {
+	char *message = (char *)malloc(128);
+	snprintf(message, 128, "Uncompressing %s...", Utils_Basename(path));
+
+	SceInt msg_width = vita2d_pvf_text_width(font, 1.5f, message);
+	SceInt msg_height = vita2d_pvf_text_height(font, 1.5f, message);
+
+	while (SCE_TRUE) {
+		vita2d_start_drawing();
+		vita2d_clear_screen();
+	
+		vita2d_draw_texture(background, 0, 0);
+
+		vita2d_pvf_draw_text(font, (960 - msg_width) / 2, (544 - msg_height) / 2, COLOUR_TEXT, 1.5f, message);
+
+		vita2d_end_frame();
+
+		sceKernelDelayThread(1);
+		break;
+	}
+
+	free(message);
+	return 0;
+} 
+
 SceInt Menu_Restore(SceVoid) {
 	memset(enable, 0, sizeof(enable)); // Reset all enabled data
 
@@ -253,6 +278,7 @@ SceInt Menu_Restore(SceVoid) {
 					strcpy(path + strlen(path), file->name);
 			
 					Utils_LockPower();
+					Menu_DisplayUncompressingMessage(path);
 					MicrotarRead_ExtractTar(path, "ux0:");
 					Utils_UnlockPower();
 				}
